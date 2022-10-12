@@ -5,24 +5,28 @@ import { Todo } from './todo.model';
 export class TodoService {
   todos: Todo[] = [];
 
-  addTodo(title: string, todo: string) {
+  addTodo(title: string, todo: string): string {
     const todoId = Math.random().toFixed(10).toString();
     const newTodo = new Todo(todoId, title, todo);
     this.todos.push(newTodo);
     return todoId;
   }
 
-  getTodos() {
-    return [...this.todos];
+  getTodos(): Todo[] {
+    return this.todos;
   }
 
-  getATodo(todoId: string) {
+  getATodo(todoId: string): {
+    id: string;
+    title: string;
+    todo: string;
+  } {
     const aTodo = this.findTodo(todoId)[0];
-    return { ...aTodo };
+    return aTodo;
   }
 
-  updateTodo(todoId: string, title: string, todo: string) {
-    const [patchTodo, index] = this.findTodo(todoId);
+  updateTodo(todoId: string, title: string, todo: string): void {
+    const { todo: patchTodo, index: index } = this.findTodo(todoId);
     const updatedTodo = { ...patchTodo };
     if (title) {
       updatedTodo.title = title;
@@ -34,17 +38,19 @@ export class TodoService {
     this.todos[index] = updatedTodo;
   }
 
-  private findTodo(id: string): [Todo, number] {
-    const todoIndex = this.todos.findIndex((todo) => todo.id === id);
+  private findTodo(todoId: string): { todo: Todo; index: number } {
+    const todoIndex = this.todos.findIndex((todo) => todo.id === todoId);
     const aTodo = this.todos[todoIndex];
-    if (!aTodo) {
-      throw new Error('invalid ID');
+    if (aTodo) {
+      return { todo: aTodo, index: todoIndex };
     }
-    return [aTodo, todoIndex];
+    if (!aTodo) {
+      throw 404;
+    }
   }
 
-  removeTodo(todoId: string) {
-    const [_, index] = this.findTodo(todoId);
+  removeTodo(todoId: string): void {
+    const { todo: _, index: index } = this.findTodo(todoId);
     this.todos.splice(index);
   }
 }
