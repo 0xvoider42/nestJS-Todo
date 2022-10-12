@@ -14,6 +14,11 @@ interface CreateTodoBody {
   text: string;
 }
 
+interface UpdateTodoBody {
+  title: string;
+  text: string;
+}
+
 @Controller('todos')
 export class TodoController {
   constructor(private todoService: TodoService) {}
@@ -35,7 +40,7 @@ export class TodoController {
   }
 
   @Patch(':id')
-  updateTodo(@Param('id') todoId: string, @Body() body: CreateTodoBody) {
+  updateTodo(@Param('id') todoId: string, @Body() body: UpdateTodoBody) {
     this.todoService.updateTodo(todoId, body.title, body.text);
     return 'Update successful';
   }
