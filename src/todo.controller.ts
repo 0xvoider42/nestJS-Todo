@@ -26,7 +26,7 @@ export class TodoController {
   @Post()
   addTodo(@Body() body: CreateTodoBody) {
     const generatedId = this.todoService.addTodo(body.title, body.text);
-    return `The todo has been added by ID: ${generatedId}`;
+    return { id: generatedId };
   }
 
   @Get()
