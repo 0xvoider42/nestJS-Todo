@@ -5,46 +5,40 @@ import { Todo } from './todo.model';
 export class TodoService {
   todos: Todo[] = [];
 
-  addTodo(title: string, todo: string) {
+  addTodo(title: string, text: string): string {
     const todoId = Math.random().toFixed(10).toString();
-    const newTodo = new Todo(todoId, title, todo);
+    const newTodo = new Todo(todoId, title, text);
     this.todos.push(newTodo);
     return todoId;
   }
 
-  getTodos() {
-    return [...this.todos];
+  getTodos(): Todo[] {
+    return this.todos;
   }
 
-  getATodo(todoId: string) {
-    const aTodo = this.findTodo(todoId)[0];
-    return { ...aTodo };
+  getATodo(todoId: string): Todo {
+    return this.findTodo(todoId).todo;
   }
 
-  updateTodo(todoId: string, title: string, todo: string) {
-    const [patchTodo, index] = this.findTodo(todoId);
-    const updatedTodo = { ...patchTodo };
-    if (title) {
-      updatedTodo.title = title;
+  updateTodo(todoId: string, title: string, text: string): void {
+    const { todo, index } = this.findTodo(todoId);
+
+    todo.title = title ?? todo.title;
+    todo.text = text ?? todo.text;
+
+    this.todos[index] = todo;
+  }
+
+  private findTodo(todoId: string): { todo: Todo; index: number } {
+    const todoIndex = this.todos.findIndex((todo) => todo.id === todoId);
+    if (todoIndex === -1) {
+      throw 404;
     }
-    if (todo) {
-      updatedTodo.todo = todo;
-    }
-
-    this.todos[index] = updatedTodo;
+    return { todo: this.todos[todoIndex], index: todoIndex };
   }
 
-  private findTodo(id: string): [Todo, number] {
-    const todoIndex = this.todos.findIndex((todo) => todo.id === id);
-    const aTodo = this.todos[todoIndex];
-    if (!aTodo) {
-      throw new Error('invalid ID');
-    }
-    return [aTodo, todoIndex];
-  }
-
-  removeTodo(todoId: string) {
-    const [_, index] = this.findTodo(todoId);
-    this.todos.splice(index);
+  removeTodo(todoId: string): void {
+    const { index } = this.findTodo(todoId);
+    this.todos.splice(index, 1);
   }
 }
