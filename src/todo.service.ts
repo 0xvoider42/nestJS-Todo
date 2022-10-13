@@ -8,6 +8,9 @@ export class TodoService {
   addTodo(title: string, text: string): string {
     const todoId = Math.random().toFixed(10).toString();
     const newTodo = new Todo(todoId, title, text);
+    if (newTodo.text === undefined) {
+      throw 500;
+    }
     this.todos.push(newTodo);
     return todoId;
   }
