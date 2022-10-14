@@ -10,7 +10,6 @@ describe('Todo', () => {
 
   const testTitle = 'test title';
   const testText = 'test text';
-  const id = '1';
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
@@ -60,6 +59,8 @@ describe('Todo', () => {
 
   describe('Fetches all todos GET /todos', () => {
     it('should return 200 if todos are created', () => {
+      const id = '1';
+
       todoService.todos.push({ id, title: 'new title', text: 'new text' });
       const spy = jest.spyOn(todoService, 'getTodos');
 
@@ -76,6 +77,8 @@ describe('Todo', () => {
 
   describe('Fetches a specific todo GET /todos/:id', () => {
     it('should return 200 and a todo corresponding to passed id', () => {
+      const id = '2';
+
       todoService.todos.push({ id, title: 'new title', text: 'new text' });
       const spy = jest.spyOn(todoService, 'getATodo');
 
@@ -85,7 +88,7 @@ describe('Todo', () => {
         .then((res) => {
           const id = res.body.id;
 
-          expect(id).toEqual('1');
+          expect(id).toEqual('2');
 
           expect(spy).toHaveBeenCalledTimes(1);
           expect(spy).toBeCalledWith(id);
@@ -97,6 +100,8 @@ describe('Todo', () => {
 
   describe('Updates a todo corresponding to passed id PATCH /todos/:id', () => {
     it('should return 200 and edit title of a todo corresponding to id', () => {
+      const id = '2';
+
       todoService.todos.push({ id, title: 'new title', text: 'new text' });
       const spy = jest.spyOn(todoService, 'updateTodo');
 
@@ -126,6 +131,8 @@ describe('Todo', () => {
 
   describe('Removes a todo DELETE /todos/:id', () => {
     it('should return 200 and remove a todo corresponding to the id', async () => {
+      const id = '3';
+
       todoService.todos.push({ id, title: 'new title', text: 'new text' });
       const spy = jest.spyOn(todoService, 'removeTodo');
 

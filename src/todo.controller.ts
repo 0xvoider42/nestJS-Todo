@@ -41,8 +41,7 @@ export class TodoController {
 
   @Patch(':id')
   updateTodo(@Param('id') todoId: string, @Body() body: UpdateTodoBody) {
-    this.todoService.updateTodo(todoId, body.title, body.text);
-    return { id: todoId, title: body.title, text: body.text };
+    return this.todoService.updateTodo(todoId, body.title, body.text);
   }
 
   @Delete(':id')
