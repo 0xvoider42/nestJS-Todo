@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { timeStamp } from 'console';
 import { Todo } from './todo.model';
 
 @Injectable()
@@ -38,7 +39,7 @@ export class TodoService {
     todo.text = text ?? todo.text;
 
     this.todos[index] = todo;
-    return { id: todoId, title, text };
+    return this.todos[index];
   }
 
   private findTodo(todoId: string): { todo: Todo; index: number } {

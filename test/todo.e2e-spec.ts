@@ -10,7 +10,7 @@ describe('Todo', () => {
 
   const testTitle = 'test title';
   const testText = 'test text';
-  const trackId = [];
+  const id = '1';
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
@@ -42,7 +42,6 @@ describe('Todo', () => {
           expect(
             todoService.todos.find((todo) => todo.id === id),
           ).toBeDefined();
-          trackId.push(id);
 
           expect(spy).toHaveBeenCalledTimes(1);
           expect(spy).toBeCalledWith(testTitle, testText);
@@ -61,14 +60,14 @@ describe('Todo', () => {
 
   describe('Fetches all todos GET /todos', () => {
     it('should return 200 if todos are created', () => {
-      todoService.todos.push({ id: '1', title: 'new title', text: 'new text' });
+      todoService.todos.push({ id, title: 'new title', text: 'new text' });
       const spy = jest.spyOn(todoService, 'getTodos');
 
       return request(app.getHttpServer())
         .get('/todos')
         .expect(200)
         .then((res) => {
-          expect(res.body[1]).toEqual(todoService.todos[1]);
+          expect(res.body.find((todo) => todo.id === '1')).toBeDefined();
 
           expect(spy).toHaveBeenCalledTimes(1);
         });
@@ -77,66 +76,64 @@ describe('Todo', () => {
 
   describe('Fetches a specific todo GET /todos/:id', () => {
     it('should return 200 and a todo corresponding to passed id', () => {
-      todoService.todos.push({ id: '2', title: 'new title', text: 'new text' });
+      todoService.todos.push({ id, title: 'new title', text: 'new text' });
       const spy = jest.spyOn(todoService, 'getATodo');
 
       return request(app.getHttpServer())
-        .get(`/todos/${todoService.todos[2].id}`)
+        .get(`/todos/${id}`)
         .expect(200)
         .then((res) => {
           const id = res.body.id;
 
-          expect(todoService.getATodo(id)).toEqual(
-            todoService.todos.find((todo) => todo.id === id),
-          );
+          expect(id).toEqual('1');
 
-          expect(spy).toHaveBeenCalledTimes(2);
+          expect(spy).toHaveBeenCalledTimes(1);
           expect(spy).toBeCalledWith(id);
+
+          todoService.todos = [];
         });
     });
   });
 
   describe('Updates a todo corresponding to passed id PATCH /todos/:id', () => {
     it('should return 200 and edit title of a todo corresponding to id', () => {
-      todoService.todos.push({ id: '3', title: 'new title', text: 'new text' });
+      todoService.todos.push({ id, title: 'new title', text: 'new text' });
       const spy = jest.spyOn(todoService, 'updateTodo');
 
       return request(app.getHttpServer())
-        .patch(`/todos/${todoService.todos[3].id}`)
+        .patch(`/todos/${id}`)
         .send({ title: 'update', text: 'update text' })
         .expect(200)
         .then((res) => {
-          const text = res.body.text;
           const title = res.body.title;
+          const text = res.body.text;
 
-          expect(
-            todoService.updateTodo(todoService.todos[2].id, title, text),
-          ).toBeDefined();
+          expect(title).toEqual('update');
+          expect(text).toEqual('update text');
+          expect(todoService.todos.find((todo) => todo.id === id)).toEqual({
+            id,
+            text: 'update text',
+            title: 'update',
+          });
 
-          expect(
-            todoService.updateTodo(todoService.todos[2].id, title, text),
-          ).toEqual(todoService.todos.find((todo) => todo.title === title));
+          expect(spy).toHaveBeenCalledTimes(1);
+          expect(spy).toHaveBeenCalledWith(id, 'update', 'update text');
 
-          expect(spy).toHaveBeenCalledTimes(3);
-          expect(spy).toHaveBeenCalledWith(
-            todoService.todos[2].id,
-            title,
-            text,
-          );
+          todoService.todos = [];
         });
     });
   });
 
   describe('Removes a todo DELETE /todos/:id', () => {
     it('should return 200 and remove a todo corresponding to the id', async () => {
-      todoService.todos.push({ id: '4', title: 'new title', text: 'new text' });
+      todoService.todos.push({ id, title: 'new title', text: 'new text' });
       const spy = jest.spyOn(todoService, 'removeTodo');
 
       return request(app.getHttpServer())
-        .delete(`/todos/${todoService.todos[4].id}`)
+        .delete(`/todos/${id}`)
         .expect(200)
         .then(() => {
-          expect(todoService.getTodos().find((todo) => todo.id !== '4'));
+          expect(todoService.getTodos().find((todo) => todo.id !== id));
 
           expect(spy).toBeCalledTimes(1);
         });
