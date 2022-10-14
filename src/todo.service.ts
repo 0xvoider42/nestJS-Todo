@@ -5,14 +5,14 @@ import { Todo } from './todo.model';
 export class TodoService {
   todos: Todo[] = [];
 
-  addTodo(title: string, text: string): string {
+  addTodo(title: string, text: string): Todo {
     const todoId = Math.random().toFixed(10).toString();
     const newTodo = new Todo(todoId, title, text);
-    if (newTodo.text === undefined) {
-      throw 500;
-    }
+    // if (newTodo.text === undefined) {
+    //   throw 500;
+    // }
     this.todos.push(newTodo);
-    return todoId;
+    return newTodo;
   }
 
   getTodos(): Todo[] {
