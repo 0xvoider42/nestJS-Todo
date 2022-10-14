@@ -42,12 +42,12 @@ export class TodoController {
   @Patch(':id')
   updateTodo(@Param('id') todoId: string, @Body() body: UpdateTodoBody) {
     this.todoService.updateTodo(todoId, body.title, body.text);
-    return 'Update successful';
+    return { id: todoId, title: body.title, text: body.text };
   }
 
   @Delete(':id')
   removeTodo(@Param('id') todoId: string) {
     this.todoService.removeTodo(todoId);
-    return 'Todo removed';
+    return todoId;
   }
 }

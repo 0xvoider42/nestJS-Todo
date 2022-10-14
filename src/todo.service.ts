@@ -23,13 +23,22 @@ export class TodoService {
     return this.findTodo(todoId).todo;
   }
 
-  updateTodo(todoId: string, title: string, text: string): void {
+  updateTodo(
+    todoId: string,
+    title: string,
+    text: string,
+  ): {
+    id: string;
+    title: string;
+    text: string;
+  } {
     const { todo, index } = this.findTodo(todoId);
 
     todo.title = title ?? todo.title;
     todo.text = text ?? todo.text;
 
     this.todos[index] = todo;
+    return { id: todoId, title, text };
   }
 
   private findTodo(todoId: string): { todo: Todo; index: number } {
