@@ -34,7 +34,7 @@ export class TodoService {
   } {
     const { todo, index } = this.findTodo(todoId);
 
-    todo.title = title ?? todo.title;
+    todo.title = title || todo.title;
     todo.text = text ?? todo.text;
 
     this.todos[index] = todo;
