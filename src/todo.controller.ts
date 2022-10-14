@@ -26,7 +26,7 @@ export class TodoController {
   @Post()
   addTodo(@Body() body: CreateTodoBody) {
     const generatedId = this.todoService.addTodo(body.title, body.text);
-    return `The todo has been added by ID: ${generatedId}`;
+    return { id: generatedId };
   }
 
   @Get()
@@ -41,13 +41,12 @@ export class TodoController {
 
   @Patch(':id')
   updateTodo(@Param('id') todoId: string, @Body() body: UpdateTodoBody) {
-    this.todoService.updateTodo(todoId, body.title, body.text);
-    return 'Update successful';
+    return this.todoService.updateTodo(todoId, body.title, body.text);
   }
 
   @Delete(':id')
   removeTodo(@Param('id') todoId: string) {
     this.todoService.removeTodo(todoId);
-    return 'Todo removed';
+    return todoId;
   }
 }

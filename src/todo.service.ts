@@ -8,6 +8,9 @@ export class TodoService {
   addTodo(title: string, text: string): string {
     const todoId = Math.random().toFixed(10).toString();
     const newTodo = new Todo(todoId, title, text);
+    if (newTodo.text === undefined) {
+      throw 500;
+    }
     this.todos.push(newTodo);
     return todoId;
   }
@@ -20,13 +23,22 @@ export class TodoService {
     return this.findTodo(todoId).todo;
   }
 
-  updateTodo(todoId: string, title: string, text: string): void {
+  updateTodo(
+    todoId: string,
+    title: string,
+    text: string,
+  ): {
+    id: string;
+    title: string;
+    text: string;
+  } {
     const { todo, index } = this.findTodo(todoId);
 
-    todo.title = title ?? todo.title;
+    todo.title = title || todo.title;
     todo.text = text ?? todo.text;
 
     this.todos[index] = todo;
+    return this.todos[index];
   }
 
   private findTodo(todoId: string): { todo: Todo; index: number } {
