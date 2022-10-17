@@ -98,7 +98,7 @@ describe('Todo', () => {
   });
 
   describe('Updates a todo corresponding to passed id PATCH /todos/:id', () => {
-    it('should return 200 and edit title of a todo corresponding to id', () => {
+    it('should return 200 and edit title of a todo corresponding to id', async () => {
       const id = '2';
 
       todoService.todos.push({ id, title: 'new title', text: 'new text' });

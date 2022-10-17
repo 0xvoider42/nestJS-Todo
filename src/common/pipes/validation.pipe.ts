@@ -7,6 +7,7 @@ export class RequestValidationPipe implements PipeTransform {
   constructor(private schema: ObjectSchema) {}
 
   transform(value: Todo) {
+    console.log('Value', value);
     const { error } = this.schema.validate(value);
 
     if (error) {
@@ -14,7 +15,10 @@ export class RequestValidationPipe implements PipeTransform {
         { message: err.message, path: err.path },
       ]);
 
-      throw new HttpException(errorMessage.flat(), 500);
+      throw new HttpException(
+        { message: 'Validation Failed', errors: errorMessage.flat() },
+        500,
+      );
     }
 
     return value;

@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { RequestValidationPipe } from '../common/pipes/validation.pipe';
-import { updateTodoBody } from '../common/todo-schema';
+import { addTodoBody, updateTodoBody } from '../common/todo-schema';
 
 interface CreateTodoBody {
   title: string;
@@ -27,10 +27,9 @@ export class TodoController {
   constructor(private todoService: TodoService) {}
 
   @Post()
-  @UsePipes(new RequestValidationPipe(updateTodoBody))
-  async addTodo(@Body() body: CreateTodoBody) {
-    const generatedId = this.todoService.addTodo(body.title, body.text);
-    return generatedId;
+  @UsePipes(new RequestValidationPipe(addTodoBody))
+  addTodo(@Body() body: CreateTodoBody) {
+    return this.todoService.addTodo(body.title, body.text);
   }
 
   @Get()
@@ -44,14 +43,13 @@ export class TodoController {
   }
 
   @Patch(':id')
+  // @UsePipes(new RequestValidationPipe(updateTodoBody))
   updateTodo(@Param('id') todoId: string, @Body() body: UpdateTodoBody) {
-    this.todoService.updateTodo(todoId, body.title, body.text);
-    return { todoId, title: body.title, text: body.text };
+    return this.todoService.updateTodo(todoId, body.title, body.text);
   }
 
   @Delete(':id')
   removeTodo(@Param('id') todoId: string) {
-    this.todoService.removeTodo(todoId);
-    return { id: todoId };
+    return this.todoService.removeTodo(todoId);
   }
 }
