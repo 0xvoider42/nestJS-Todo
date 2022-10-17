@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { Todo } from './todo.model';
 
@@ -42,7 +42,7 @@ export class TodoService {
   private findTodo(todoId: string): { todo: Todo; index: number } {
     const todoIndex = this.todos.findIndex((todo) => todo.id === todoId);
     if (todoIndex === -1) {
-      throw 404;
+      throw new HttpException("didn't find the todo", 404);
     }
     return { todo: this.todos[todoIndex], index: todoIndex };
   }
