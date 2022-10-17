@@ -2,7 +2,7 @@ import * as request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../src/app.module';
-import { TodoService } from '../src/todo.service';
+import { TodoService } from '../src/todo/todo.service';
 
 describe('Todo', () => {
   let app: INestApplication;
@@ -37,7 +37,6 @@ describe('Todo', () => {
           const id = res.body.id;
 
           expect(id).toEqual(expect.any(String));
-
           expect(
             todoService.todos.find((todo) => todo.id === id),
           ).toBeDefined();

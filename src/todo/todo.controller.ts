@@ -6,11 +6,9 @@ import {
   Param,
   Patch,
   Delete,
-  UsePipes,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
-import schema from './todoSchema';
-import { TodoValidate } from './todoValidate';
+import { TodoValidate } from '../common/pipes/todo-validate';
 
 interface CreateTodoBody {
   title: string;
@@ -27,10 +25,10 @@ export class TodoController {
   constructor(private todoService: TodoService) {}
 
   @Post()
-  @UsePipes(new TodoValidate(schema))
-  addTodo(@Body() body: CreateTodoBody) {
+  // @UsePipes(new TodoValidate(updateTodoBody))
+  async addTodo(@Body(new TodoValidate()) body: CreateTodoBody) {
     const generatedId = this.todoService.addTodo(body.title, body.text);
-    return { id: generatedId };
+    return generatedId;
   }
 
   @Get()

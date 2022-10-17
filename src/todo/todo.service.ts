@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import { Todo } from './todo.model';
 
 @Injectable()
@@ -6,11 +7,8 @@ export class TodoService {
   todos: Todo[] = [];
 
   addTodo(title: string, text: string): Todo {
-    const todoId = Math.random().toFixed(10).toString();
+    const todoId = randomUUID();
     const newTodo = new Todo(todoId, title, text);
-    // if (newTodo.text === undefined) {
-    //   throw 500;
-    // }
     this.todos.push(newTodo);
     return newTodo;
   }
