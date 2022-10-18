@@ -55,7 +55,7 @@ describe('Todo', () => {
         .expect(400);
     });
 
-    it('should return 400 and errors array if title is not provided', () => {
+    it('should return 400 and errors array with path "title" if title is not provided', () => {
       const spy = jest.spyOn(todoService, 'addTodo');
       return request(app.getHttpServer())
         .post('/todos')
@@ -64,6 +64,29 @@ describe('Todo', () => {
         })
         .expect(400)
         .then((res) => {
+          const errorPath = res.body.errors[0][0].path[0];
+
+          expect(errorPath).toEqual('title');
+
+          expect(res.body.message).toEqual(expect.any(String));
+          expect(res.body.errors).toEqual(expect.any(Array));
+
+          expect(spy).toHaveBeenCalledTimes(1);
+        });
+    });
+    it('should return 400 and errors array with path "text" if text is not provided', () => {
+      const spy = jest.spyOn(todoService, 'addTodo');
+      return request(app.getHttpServer())
+        .post('/todos')
+        .send({
+          title: testTitle,
+        })
+        .expect(400)
+        .then((res) => {
+          const errorPath = res.body.errors[0][0].path[0];
+
+          expect(errorPath).toEqual('text');
+
           expect(res.body.message).toEqual(expect.any(String));
           expect(res.body.errors).toEqual(expect.any(Array));
 
