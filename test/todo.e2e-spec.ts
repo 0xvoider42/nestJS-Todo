@@ -116,20 +116,6 @@ describe('Todo', () => {
           expect(spy).toHaveBeenCalledTimes(1);
         });
     });
-
-    it('should return 404 if todos have not been created', () => {
-      const spy = jest.spyOn(todoService, 'getTodos');
-      todoService.todos = [];
-
-      return request(app.getHttpServer())
-        .get('/todos')
-        .expect(404)
-        .then((res) => {
-          expect(res.body.message).toEqual(expect.any(String));
-
-          expect(spy).toHaveBeenCalledTimes(2);
-        });
-    });
   });
 
   describe('Fetches a specific todo GET /todos/:id', () => {

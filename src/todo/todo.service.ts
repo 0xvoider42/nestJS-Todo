@@ -16,6 +16,8 @@ export class TodoService {
 
     this.todos.push(newTodo);
 
+    this.logger.log('Updated todo with id', { newTodo });
+
     return newTodo;
   }
 
