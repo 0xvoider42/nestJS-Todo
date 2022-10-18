@@ -1,9 +1,11 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { Todo } from './todo.model';
 
 @Injectable()
 export class TodoService {
+  private readonly logger = new Logger(TodoService.name);
+
   todos: Todo[] = [];
 
   addTodo(title: string, text: string): Todo {
@@ -12,14 +14,22 @@ export class TodoService {
 
     this.todos.push(newTodo);
 
+    this.logger.log('Adding Todo', { title, text });
+
     return newTodo;
   }
 
   getTodos(): Todo[] {
+    if (this.todos.length === 0) {
+      throw new HttpException('No todos have been found', 404);
+    }
+
     return this.todos;
   }
 
   getATodo(todoId: string): Todo {
+    this.logger.log('Fetching a todo with id: ', todoId);
+
     return this.findTodo(todoId).todo;
   }
 
@@ -30,6 +40,9 @@ export class TodoService {
     todo.text = text ?? todo.text;
 
     this.todos[index] = todo;
+
+    this.logger.log('Updating a todo', { todoId, title, text });
+
     return todo;
   }
 
@@ -40,6 +53,8 @@ export class TodoService {
       throw new HttpException("didn't find the todo", 404);
     }
 
+    this.logger.log('Searching for todo with id: ', todoId);
+
     return { todo: this.todos[todoIndex], index: todoIndex };
   }
 
@@ -47,6 +62,8 @@ export class TodoService {
     const { index } = this.findTodo(todoId);
 
     this.todos.splice(index, 1);
+
+    this.logger.log('Removing todo with id: ', todoId);
 
     return { id: todoId };
   }
