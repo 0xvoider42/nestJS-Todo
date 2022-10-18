@@ -43,7 +43,7 @@ export class TodoController {
   }
 
   @Patch(':id')
-  // @UsePipes(new RequestValidationPipe(updateTodoBody))
+  @UsePipes(new RequestValidationPipe(updateTodoBody))
   updateTodo(@Param('id') todoId: string, @Body() body: UpdateTodoBody) {
     return this.todoService.updateTodo(todoId, body.title, body.text);
   }

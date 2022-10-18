@@ -16,7 +16,7 @@ export class RequestValidationPipe implements PipeTransform {
       ]);
 
       throw new HttpException(
-        { message: 'Validation Failed', errors: errorMessage.flat() },
+        { message: 'Validation Failed', errors: errorMessage },
         500,
       );
     }

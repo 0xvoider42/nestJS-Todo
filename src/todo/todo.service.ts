@@ -23,7 +23,7 @@ export class TodoService {
     return this.findTodo(todoId).todo;
   }
 
-  updateTodo(todoId: string, title: string, text: string) {
+  updateTodo(todoId: string, title: string, text: string): Todo {
     const { todo, index } = this.findTodo(todoId);
 
     todo.title = title || todo.title;
@@ -43,7 +43,7 @@ export class TodoService {
     return { todo: this.todos[todoIndex], index: todoIndex };
   }
 
-  removeTodo(todoId: string) {
+  removeTodo(todoId: string): { id: string } {
     const { index } = this.findTodo(todoId);
 
     this.todos.splice(index, 1);
