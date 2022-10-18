@@ -66,6 +66,8 @@ describe('Todo', () => {
         .then((res) => {
           const errorPath = res.body.errors[0].path[0];
 
+          expect(res.body.errors).toHaveLength(1);
+
           expect(errorPath).toEqual('title');
 
           expect(res.body.message).toEqual(expect.any(String));
@@ -74,6 +76,7 @@ describe('Todo', () => {
           expect(spy).toHaveBeenCalledTimes(1);
         });
     });
+
     it('should return 400 and errors array with path "text" if text is not provided', () => {
       const spy = jest.spyOn(todoService, 'addTodo');
       return request(app.getHttpServer())
@@ -84,6 +87,8 @@ describe('Todo', () => {
         .expect(400)
         .then((res) => {
           const errorPath = res.body.errors[0].path[0];
+
+          expect(res.body.errors).toHaveLength(1);
 
           expect(errorPath).toEqual('text');
 
@@ -178,6 +183,8 @@ describe('Todo', () => {
         .expect(400)
         .then((res) => {
           const errorPath = res.body.errors[0].path[0];
+
+          expect(res.body.errors).toHaveLength(1);
 
           expect(errorPath).toEqual('text');
 
