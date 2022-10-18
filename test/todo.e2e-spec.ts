@@ -64,7 +64,7 @@ describe('Todo', () => {
         })
         .expect(400)
         .then((res) => {
-          const errorPath = res.body.errors[0][0].path[0];
+          const errorPath = res.body.errors[0].path[0];
 
           expect(errorPath).toEqual('title');
 
@@ -83,7 +83,7 @@ describe('Todo', () => {
         })
         .expect(400)
         .then((res) => {
-          const errorPath = res.body.errors[0][0].path[0];
+          const errorPath = res.body.errors[0].path[0];
 
           expect(errorPath).toEqual('text');
 
@@ -177,7 +177,7 @@ describe('Todo', () => {
         .send({})
         .expect(400)
         .then((res) => {
-          const errorPath = res.body.errors[0][0].path[0];
+          const errorPath = res.body.errors[0].path[0];
 
           expect(errorPath).toEqual('text');
 

@@ -19,9 +19,10 @@ export class RequestValidationPipe implements PipeTransform {
     const { error } = this.schema.validate(value);
 
     if (error) {
-      const errorMessage = error.details.map((err) => [
-        { message: err.message, path: err.path },
-      ]);
+      const errorMessage = error.details.map((err) => ({
+        message: err.message,
+        path: err.path,
+      }));
 
       throw new HttpException(
         { message: 'Validation Failed', errors: errorMessage },
