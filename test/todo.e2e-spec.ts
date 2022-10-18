@@ -46,23 +46,23 @@ describe('Todo', () => {
         });
     });
 
-    it('should return 500 if text is not provided', () => {
+    it('should return 400 if text is not provided', () => {
       return request(app.getHttpServer())
         .post('/todos')
         .send({
           title: testTitle,
         })
-        .expect(500);
+        .expect(400);
     });
 
-    it('should return 500 and errors array if title is not provided', () => {
+    it('should return 400 and errors array if title is not provided', () => {
       const spy = jest.spyOn(todoService, 'addTodo');
       return request(app.getHttpServer())
         .post('/todos')
         .send({
           text: testText,
         })
-        .expect(500)
+        .expect(400)
         .then((res) => {
           expect(res.body.message).toEqual(expect.any(String));
           expect(res.body.errors).toEqual(expect.any(Array));
@@ -143,16 +143,21 @@ describe('Todo', () => {
         });
     });
 
-    it('should return 500 and an array of errors if update body is empty', () => {
-      const id = '3';
+    it('should return 400 and an array of errors if update body is empty', () => {
+      const id = '4';
 
+      todoService.todos.push({ id, title: 'new title', text: 'new text' });
       const spy = jest.spyOn(todoService, 'updateTodo');
 
       return request(app.getHttpServer())
         .patch(`/todos/${id}`)
         .send({})
-        .expect(500)
+        .expect(400)
         .then((res) => {
+          const errorPath = res.body.errors[0][0].path[0];
+
+          expect(errorPath).toEqual('text');
+
           expect(res.body.message).toEqual(expect.any(String));
           expect(res.body.errors).toEqual(expect.any(Array));
 
