@@ -6,6 +6,10 @@ export const addTodoBody = Joi.object({
 });
 
 export const updateTodoBody = Joi.object({
-  title: Joi.string(),
+  title: Joi.when('text', {
+    is: Joi.string().required(),
+    then: Joi.string().allow('').allow(null),
+    otherwise: Joi.string().required(),
+  }),
   text: Joi.string(),
 });

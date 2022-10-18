@@ -54,6 +54,22 @@ describe('Todo', () => {
         })
         .expect(500);
     });
+
+    it('should return 500 and errors array if title is not provided', () => {
+      const spy = jest.spyOn(todoService, 'addTodo');
+      return request(app.getHttpServer())
+        .post('/todos')
+        .send({
+          text: testText,
+        })
+        .expect(500)
+        .then((res) => {
+          expect(res.body.message).toEqual(expect.any(String));
+          expect(res.body.errors).toEqual(expect.any(Array));
+
+          expect(spy).toHaveBeenCalledTimes(1);
+        });
+    });
   });
 
   describe('Fetches all todos GET /todos', () => {
@@ -124,6 +140,23 @@ describe('Todo', () => {
           expect(spy).toHaveBeenCalledWith(id, 'update', 'update text');
 
           todoService.todos = [];
+        });
+    });
+
+    it('should return 500 and an array of errors if update body is empty', () => {
+      const id = '3';
+
+      const spy = jest.spyOn(todoService, 'updateTodo');
+
+      return request(app.getHttpServer())
+        .patch(`/todos/${id}`)
+        .send({})
+        .expect(500)
+        .then((res) => {
+          expect(res.body.message).toEqual(expect.any(String));
+          expect(res.body.errors).toEqual(expect.any(Array));
+
+          expect(spy).toHaveBeenCalledTimes(1);
         });
     });
   });

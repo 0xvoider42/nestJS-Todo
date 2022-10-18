@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { RequestValidationPipe } from '../common/pipes/validation.pipe';
-import { addTodoBody, updateTodoBody } from '../common/todo-schema';
+import { addTodoBody, updateTodoBody } from './validation/todo-schema';
 
 interface CreateTodoBody {
   title: string;

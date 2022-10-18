@@ -1,4 +1,9 @@
-import { PipeTransform, Injectable, HttpException } from '@nestjs/common';
+import {
+  PipeTransform,
+  Injectable,
+  HttpException,
+  ArgumentMetadata,
+} from '@nestjs/common';
 import { ObjectSchema } from 'joi';
 import { Todo } from '../../todo/todo.model';
 
@@ -6,8 +11,11 @@ import { Todo } from '../../todo/todo.model';
 export class RequestValidationPipe implements PipeTransform {
   constructor(private schema: ObjectSchema) {}
 
-  transform(value: Todo) {
-    console.log('Value', value);
+  transform(value: Todo, metadata: ArgumentMetadata) {
+    if (metadata.type === 'param') {
+      return value;
+    }
+
     const { error } = this.schema.validate(value);
 
     if (error) {
