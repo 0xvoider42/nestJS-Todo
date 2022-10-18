@@ -9,21 +9,17 @@ export class TodoService {
   todos: Todo[] = [];
 
   addTodo(title: string, text: string): Todo {
+    this.logger.log('Adding Todo', { title, text });
+
     const todoId = randomUUID();
     const newTodo = new Todo(todoId, title, text);
 
     this.todos.push(newTodo);
 
-    this.logger.log('Adding Todo', { title, text });
-
     return newTodo;
   }
 
   getTodos(): Todo[] {
-    if (this.todos.length === 0) {
-      throw new HttpException('No todos have been found', 404);
-    }
-
     return this.todos;
   }
 
@@ -34,6 +30,8 @@ export class TodoService {
   }
 
   updateTodo(todoId: string, title: string, text: string): Todo {
+    this.logger.log('Updating a todo', { todoId, title, text });
+
     const { todo, index } = this.findTodo(todoId);
 
     todo.title = title || todo.title;
@@ -41,29 +39,27 @@ export class TodoService {
 
     this.todos[index] = todo;
 
-    this.logger.log('Updating a todo', { todoId, title, text });
-
     return todo;
   }
 
   private findTodo(todoId: string): { todo: Todo; index: number } {
+    this.logger.log('Searching for todo with id: ', todoId);
+
     const todoIndex = this.todos.findIndex((todo) => todo.id === todoId);
 
     if (todoIndex === -1) {
       throw new HttpException("didn't find the todo", 404);
     }
 
-    this.logger.log('Searching for todo with id: ', todoId);
-
     return { todo: this.todos[todoIndex], index: todoIndex };
   }
 
   removeTodo(todoId: string): { id: string } {
+    this.logger.log('Removing todo with id: ', todoId);
+
     const { index } = this.findTodo(todoId);
 
     this.todos.splice(index, 1);
-
-    this.logger.log('Removing todo with id: ', todoId);
 
     return { id: todoId };
   }
