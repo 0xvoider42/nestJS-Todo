@@ -22,6 +22,7 @@ export class TodoService {
   }
 
   getTodos(): Todo[] {
+    this.logger.log('Fetching todos list', this.todos);
     return this.todos;
   }
 
