@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:18
 
 WORKDIR /main
 
@@ -8,8 +8,6 @@ RUN npm i
 
 COPY . .
 
-ENV PORT=3000
-
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["npm run", "start:dev"]
