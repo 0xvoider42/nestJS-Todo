@@ -7,10 +7,12 @@ import {
   Patch,
   Delete,
   UsePipes,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { RequestValidationPipe } from '../common/pipes/validation.pipe';
 import { addTodoBody, updateTodoBody } from './validation/todo-schema';
+import { LoggingInterceptor } from './interceptors/logging.interceptor';
 
 interface CreateTodoBody {
   title: string;
@@ -33,6 +35,7 @@ export class TodoController {
   }
 
   @Get()
+  @UseInterceptors(LoggingInterceptor)
   getAllTodos() {
     return this.todoService.getTodos();
   }
