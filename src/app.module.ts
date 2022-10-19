@@ -1,11 +1,16 @@
 import { Module } from '@nestjs/common';
 import { TodoModule } from './todo/todo.module';
 import { LoggerModule } from 'nestjs-pino';
+import { randomUUID } from 'crypto';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 @Module({
   imports: [
     LoggerModule.forRoot({
       pinoHttp: {
+        genReqId: () => randomUUID(),
+        autoLogging: false,
         transport: {
           target: 'pino-pretty',
           options: {
@@ -16,5 +21,6 @@ import { LoggerModule } from 'nestjs-pino';
     }),
     TodoModule,
   ],
+  providers: [{ provide: APP_INTERCEPTOR, useClass: LoggingInterceptor }],
 })
 export class AppModule {}
