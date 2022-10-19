@@ -4,9 +4,11 @@ import { LoggerModule } from 'nestjs-pino';
 import { randomUUID } from 'crypto';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
 
 @Module({
   imports: [
+    MikroOrmModule.forRoot(),
     LoggerModule.forRoot({
       pinoHttp: {
         genReqId: () => randomUUID(),
