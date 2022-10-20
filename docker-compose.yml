@@ -2,24 +2,24 @@ version: '3'
 services:
   api:
     build: .
+    environment:
+      - DB_PORT='6000:5432'
     ports:
       - '3000:3000'
   db:
     container_name: todo_container
     image: postgres
-    restart: always
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: todo_db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
-      - '6000:6000'
+      - ${DB_PORT}
   pgadmin:
     container_name: pgadmin_container
     image: dpage/pgadmin4
-    restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root
+      PGADMIN_DEFAULT_EMAIL: ${DB_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${DB_PASSWORD}
     ports:
       - '5050:80'

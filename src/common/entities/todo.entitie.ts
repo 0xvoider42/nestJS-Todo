@@ -11,6 +11,12 @@ export class TodoEntity {
   @Property()
   text: string;
 
+  @Property()
+  createdAt = new Date();
+
+  @Property({ onUpdate: () => new Date() })
+  updatedAt = new Date();
+
   constructor(id: string, title: string, text: string) {
     this.id = id;
     this.title = title;
