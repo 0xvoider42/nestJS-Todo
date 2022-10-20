@@ -5,13 +5,13 @@ dotenv.config();
 
 const config: Options = {
   type: 'postgresql',
-  host: 'localhost',
+  host: process.env.DB_HOST,
   port: 5432,
-  user: 'postgres',
+  user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  dbName: 'todo-db',
-  entities: ['dist/**/*.entity.js'],
-  entitiesTs: ['src/common/entities/*.entity.ts'],
+  dbName: process.env.DB_NAME,
+  entities: ['dist/common/entities/*.entitie.js'],
+  entitiesTs: ['src/common/entities/*.entitie.ts'],
   metadataProvider: TsMorphMetadataProvider,
 };
 
