@@ -1,6 +1,6 @@
 import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
 
-@Entity()
+@Entity({ tableName: 'todo' })
 export class TodoEntity {
   @PrimaryKey()
   id: string;
@@ -10,6 +10,12 @@ export class TodoEntity {
 
   @Property()
   text: string;
+
+  @Property()
+  createdAt: string;
+
+  @Property()
+  updatedAt: string;
 
   constructor(id: string, title: string, text: string) {
     this.id = id;

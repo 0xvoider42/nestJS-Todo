@@ -4,10 +4,13 @@ services:
     build: .
     env_file:
       - db.env
+    environment:
+      - DB_PORT=5432
+      - DB_HOST=todo_container
     ports:
-      - '3000:3000'
+      - ${DB_PORT}
   db:
-    container_name: todo_container
+    container_name: ${DB_HOST}
     image: postgres
     environment:
       POSTGRES_USER: ${DB_USER_DOCKER}
@@ -22,4 +25,4 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${DB_EMAIL_DOCKER}
       PGADMIN_DEFAULT_PASSWORD: ${DB_PASSWORD_DOCKER}
     ports:
-      - '5050:80'
+      - ${PG_PORT}

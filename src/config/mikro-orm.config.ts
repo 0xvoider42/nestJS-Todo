@@ -8,8 +8,8 @@ const config: Options = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   dbName: process.env.DB_NAME,
-  entities: ['dist/common/entities/*.entitie.js'],
-  entitiesTs: ['src/common/entities/*.entitie.ts'],
+  entities: ['dist/todo/entities/*.entitie.js'],
+  entitiesTs: ['src/todo/entities/*.entitie.ts'],
   metadataProvider: TsMorphMetadataProvider,
   migrations: {
     path: 'dist/database/migrations',

@@ -1,6 +1,6 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class Migration20221021081655 extends Migration {
+export class Migration20221021103804 extends Migration {
   async up(): Promise<void> {
     this.addSql(
       `CREATE OR REPLACE FUNCTION trigger_set_timestamp() 
@@ -9,18 +9,20 @@ export class Migration20221021081655 extends Migration {
           END;
       $$ LANGUAGE 'plpgsql'`,
     );
+
     this.addSql(
-      'create table "todo_entity" ("id" varchar(255) not null, "title" varchar(255) not null, "text" varchar(255) not null, constraint "todo_entity_pkey" primary key ("id"), "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(), "updated_at" TIMESTAMPTZ NOT NULL DEFAULT NOW());',
+      'create table "todo" ("id" varchar(255) not null, "title" varchar(255) not null, "text" varchar(255) not null, "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(), "updated_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(), constraint "todo_pkey" primary key ("id"));',
     );
+
     this.addSql(`
     CREATE TRIGGER set_timestamp
-      BEFORE UPDATE ON "todo_entity"
+      BEFORE UPDATE ON "todo"
       FOR EACH ROW
       EXECUTE PROCEDURE trigger_set_timestamp();
     `);
   }
 
   async down(): Promise<void> {
-    this.addSql('drop table if exists "todo_entity" cascade;');
+    this.addSql('drop table if exists "todo" cascade;');
   }
 }
