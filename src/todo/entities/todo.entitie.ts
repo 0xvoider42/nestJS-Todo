@@ -11,11 +11,11 @@ export class TodoEntity {
   @Property()
   text: string;
 
-  @Property()
-  createdAt: string;
+  @Property({ type: 'timestamptz' })
+  createdAt: Date;
 
-  @Property()
-  updatedAt: string;
+  @Property({ type: 'timestamptz' })
+  updatedAt: Date;
 
   constructor(id: string, title: string, text: string) {
     this.id = id;

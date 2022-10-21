@@ -2,13 +2,15 @@ version: '3'
 services:
   api:
     build: .
-    env_file:
-      - db.env
     environment:
-      - DB_PORT=5432
+      - DB_EMAIL_DOCKER=admin@admin.com
       - DB_HOST=todo_container
+      - DB_NAME_DOCKER=todo-db
+      - DB_PASSWORD_DOCKER=root
+      - DB_PORT=5432
+      - DB_USER_DOCKER=root
     ports:
-      - ${DB_PORT}
+      - '3000:3000'
   db:
     container_name: ${DB_HOST}
     image: postgres
@@ -17,7 +19,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD_DOCKER}
       POSTGRES_DB: ${DB_NAME_DOCKER}
     ports:
-      - ${DB_PORT_DOCKER}
+      - '6000:5432'
   pgadmin:
     container_name: pgadmin_container
     image: dpage/pgadmin4
@@ -25,4 +27,4 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${DB_EMAIL_DOCKER}
       PGADMIN_DEFAULT_PASSWORD: ${DB_PASSWORD_DOCKER}
     ports:
-      - ${PG_PORT}
+      - '5050:80'
