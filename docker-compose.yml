@@ -3,28 +3,27 @@ services:
   api:
     build: .
     environment:
-      - DB_EMAIL_DOCKER=admin@admin.com
-      - DB_HOST=todo_container
-      - DB_NAME_DOCKER=todo-db
-      - DB_PASSWORD_DOCKER=root
-      - DB_PORT=5432
-      - DB_USER_DOCKER=root
+      - DB_EMAIL_DOCKER='admin@admin.com'
+      - DB_HOST='todo_container'
+      - DB_NAME_DOCKER='todo-db'
+      - DB_PASSWORD_DOCKER='root'
+      - DB_USER_DOCKER='root'
     ports:
-      - '3000:3000'
+      - 3000:3000
   db:
-    container_name: ${DB_HOST}
+    container_name: DB_HOST
     image: postgres
     environment:
-      POSTGRES_USER: ${DB_USER_DOCKER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD_DOCKER}
-      POSTGRES_DB: ${DB_NAME_DOCKER}
+      POSTGRES_USER: DB_USER_DOCKER
+      POSTGRES_PASSWORD: DB_PASSWORD_DOCKER
+      POSTGRES_DB: DB_NAME_DOCKER
     ports:
-      - '6000:5432'
+      - 6000:5432
   pgadmin:
     container_name: pgadmin_container
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${DB_EMAIL_DOCKER}
-      PGADMIN_DEFAULT_PASSWORD: ${DB_PASSWORD_DOCKER}
+      PGADMIN_DEFAULT_EMAIL: DB_EMAIL_DOCKER
+      PGADMIN_DEFAULT_PASSWORD: DB_PASSWORD_DOCKER
     ports:
-      - '5050:80'
+      - 5050:80
