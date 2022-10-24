@@ -1,9 +1,10 @@
-import { HttpException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { Todo } from './todo.model';
 import { TodoEntity } from './entities/todo.entity';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { InjectRepository } from '@mikro-orm/nestjs';
+import { wrap } from '@mikro-orm/core';
 
 @Injectable()
 export class TodoService {
@@ -25,58 +26,57 @@ export class TodoService {
       id: todoId,
       title,
       text,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
-    this.todoRepository.persistAndFlush(todo);
+    await this.todoRepository.persistAndFlush(todo);
 
     this.logger.log('Updated todo with id', { todo });
 
     return todo;
   }
 
-  getTodos(): Todo[] {
+  async getTodos() {
     this.logger.log('Fetching todos list', this.todos);
-    return this.todos;
+
+    const todos = await this.todoRepository.findAll();
+
+    return todos;
   }
 
-  getATodo(todoId: string): Todo {
+  async getATodo(todoId: string) {
     this.logger.log('Fetching a todo with id: ', todoId);
 
-    return this.findTodo(todoId).todo;
+    const aTodo = await this.todoRepository.findOne({ id: todoId });
+
+    return aTodo;
   }
 
-  updateTodo(todoId: string, title: string, text: string): Todo {
+  async updateTodo(todoId: string, title: string, text: string) {
     this.logger.log('Updating a todo', { todoId, title, text });
+    const aTodo = await this.todoRepository.findOne({ id: todoId });
 
-    const { todo, index } = this.findTodo(todoId);
+    const update = await wrap(aTodo).assign(
+      {
+        title: title,
+        text: text,
+        updatedAt: new Date(),
+      },
+      { mergeObjects: true },
+    );
 
-    todo.title = title || todo.title;
-    todo.text = text ?? todo.text;
+    this.todoRepository.persistAndFlush(update);
 
-    this.todos[index] = todo;
-
-    return todo;
+    return update;
   }
 
-  private findTodo(todoId: string): { todo: Todo; index: number } {
-    this.logger.log('Searching for todo with id: ', todoId);
-
-    const todoIndex = this.todos.findIndex((todo) => todo.id === todoId);
-
-    if (todoIndex === -1) {
-      throw new HttpException("didn't find the todo", 404);
-    }
-
-    return { todo: this.todos[todoIndex], index: todoIndex };
-  }
-
-  removeTodo(todoId: string): { id: string } {
+  async removeTodo(todoId: string) {
     this.logger.log('Removing todo with id: ', todoId);
 
-    const { index } = this.findTodo(todoId);
+    const getTodo = await this.todoRepository.findOne({ id: todoId });
+    const removeTodo = await this.todoRepository.removeAndFlush(getTodo);
 
-    this.todos.splice(index, 1);
-
-    return { id: todoId };
+    return removeTodo;
   }
 }
