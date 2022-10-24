@@ -1,24 +1,37 @@
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { Todo } from './todo.model';
+import { TodoEntity } from './entities/todo.entity';
+import { EntityRepository } from '@mikro-orm/postgresql';
+import { InjectRepository } from '@mikro-orm/nestjs';
 
 @Injectable()
 export class TodoService {
+  constructor(
+    @InjectRepository(TodoEntity)
+    private todoRepository: EntityRepository<TodoEntity>,
+  ) {}
+
   private readonly logger = new Logger(TodoService.name);
 
   todos: Todo[] = [];
 
-  addTodo(title: string, text: string): Todo {
+  async addTodo(title: string, text: string): Promise<Todo> {
     this.logger.log('Adding Todo', { title, text });
 
     const todoId = randomUUID();
-    const newTodo = new Todo(todoId, title, text);
 
-    this.todos.push(newTodo);
+    const todo = this.todoRepository.create({
+      id: todoId,
+      title,
+      text,
+    });
 
-    this.logger.log('Updated todo with id', { newTodo });
+    this.todoRepository.persistAndFlush(todo);
 
-    return newTodo;
+    this.logger.log('Updated todo with id', { todo });
+
+    return todo;
   }
 
   getTodos(): Todo[] {
