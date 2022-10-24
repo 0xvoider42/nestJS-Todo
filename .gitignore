@@ -28,6 +28,8 @@ lerna-debug.log*
 *.sublime-workspace
 
 # IDE - VSCode
+*.env
+temp
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
