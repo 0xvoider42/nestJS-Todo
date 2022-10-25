@@ -26,7 +26,7 @@ export class TodoService {
     return response;
   }
 
-  async getTodos(): Promise<object> {
+  async getTodos(): Promise<TodoEntity[]> {
     const todos = await this.todoRepository.findAll();
 
     this.logger.log('Fetching list of todos', todos);
@@ -34,7 +34,7 @@ export class TodoService {
     return todos;
   }
 
-  async getATodo(todoId: number): Promise<object> {
+  async getATodo(todoId: number): Promise<TodoEntity> {
     this.logger.log('Fetching a todo with id: ', todoId);
 
     return this.todoRepository.findOne({ id: todoId });
