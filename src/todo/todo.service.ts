@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Todo } from './todo.model';
 import { TodoEntity } from './entities/todo.entity';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { InjectRepository } from '@mikro-orm/nestjs';
@@ -13,19 +12,17 @@ export class TodoService {
 
   private readonly logger = new Logger(TodoService.name);
 
-  async addTodo(title: string, text: string): Promise<Todo> {
+  async addTodo(title: string, text: string): Promise<string> {
     this.logger.log('Adding Todo', { title, text });
 
-    const todo = this.todoRepository.create({
-      title,
+    const response = await this.todoRepository.nativeInsert({
       text,
+      title,
     });
 
-    await this.todoRepository.persistAndFlush(todo);
+    this.logger.log('added todo to database', response);
 
-    this.logger.log('added todo to database', todo.id);
-
-    return todo;
+    return `Created Todo: id: ${response}\n title: ${title}\n text: ${text}`;
   }
 
   async getTodos() {
@@ -40,23 +37,11 @@ export class TodoService {
 
   async updateTodo(todoId: number, title: string, text: string) {
     this.logger.log('Updating a todo', { todoId, title, text });
-    // const aTodo = await this.todoRepository.findOne({ id: todoId });
 
     return await this.todoRepository.nativeUpdate(todoId, {
       title: title,
       text: text,
     });
-
-    // const update = await wrap(aTodo).assign(
-    //   {
-    //     title: title,
-    //     text: text,
-    //     updatedAt: new Date(),
-    //   },
-    //   { mergeObjects: true },
-    // );
-
-    // this.todoRepository.persistAndFlush(update);
   }
 
   async removeTodo(todoId: number) {

@@ -1,14 +1,8 @@
-import {
-  Entity,
-  PrimaryKey,
-  Property,
-  SerializedPrimaryKey,
-} from '@mikro-orm/core';
+import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
 
 @Entity({ tableName: 'todo' })
 export class TodoEntity {
   @PrimaryKey()
-  @SerializedPrimaryKey()
   id: number;
 
   @Property()
@@ -23,7 +17,7 @@ export class TodoEntity {
   @Property({ type: 'timestamptz' })
   updatedAt: Date;
 
-  constructor(id: number, title: string, text: string) {
+  constructor(title: string, text: string) {
     this.title = title;
     this.text = text;
   }
