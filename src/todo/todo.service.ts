@@ -12,7 +12,7 @@ export class TodoService {
 
   private readonly logger = new Logger(TodoService.name);
 
-  async addTodo(title: string, text: string): Promise<string> {
+  async addTodo(title: string, text: string): Promise<number> {
     this.logger.log('Adding Todo', { title, text });
 
     const response = await this.todoRepository.nativeInsert({
@@ -22,32 +22,43 @@ export class TodoService {
 
     this.logger.log('added todo to database', response);
 
-    return `Created Todo: id: ${response}\n title: ${title}\n text: ${text}`;
+    return response;
   }
 
   async getTodos() {
-    return await this.todoRepository.findAll();
+    const todos = await this.todoRepository.findAll();
+
+    this.logger.log('Fetching list of todos', todos);
+
+    return todos;
   }
 
   async getATodo(todoId: number) {
     this.logger.log('Fetching a todo with id: ', todoId);
 
-    return await this.todoRepository.findOne({ id: todoId });
+    return this.todoRepository.findOne({ id: todoId });
   }
 
-  async updateTodo(todoId: number, title: string, text: string) {
+  async updateTodo(
+    todoId: number,
+    title: string,
+    text: string,
+  ): Promise<number> {
     this.logger.log('Updating a todo', { todoId, title, text });
 
-    return await this.todoRepository.nativeUpdate(todoId, {
+    await this.todoRepository.nativeUpdate(todoId, {
       title: title,
       text: text,
     });
+
+    return todoId;
   }
 
-  async removeTodo(todoId: number) {
+  async removeTodo(todoId: number): Promise<number> {
     this.logger.log('Removing todo with id: ', todoId);
 
     await this.todoRepository.nativeDelete(todoId);
-    return `${todoId} has been deleted`;
+
+    return todoId;
   }
 }

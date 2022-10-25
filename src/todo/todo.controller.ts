@@ -7,6 +7,7 @@ import {
   Patch,
   Delete,
   UsePipes,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { RequestValidationPipe } from '../common/pipes/validation.pipe';
@@ -38,18 +39,21 @@ export class TodoController {
   }
 
   @Get(':id')
-  getATodo(@Param('id') todoId: number) {
+  getATodo(@Param('id', new ParseIntPipe()) todoId: number) {
     return this.todoService.getATodo(todoId);
   }
 
   @Patch(':id')
   @UsePipes(new RequestValidationPipe(updateTodoBody))
-  updateTodo(@Param('id') todoId: number, @Body() body: UpdateTodoBody) {
+  updateTodo(
+    @Param('id', new ParseIntPipe()) todoId: number,
+    @Body() body: UpdateTodoBody,
+  ) {
     return this.todoService.updateTodo(todoId, body.title, body.text);
   }
 
   @Delete(':id')
-  removeTodo(@Param('id') todoId: number) {
+  removeTodo(@Param('id', new ParseIntPipe()) todoId: number) {
     return this.todoService.removeTodo(todoId);
   }
 }
