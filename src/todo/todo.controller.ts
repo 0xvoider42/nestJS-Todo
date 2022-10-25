@@ -38,18 +38,18 @@ export class TodoController {
   }
 
   @Get(':id')
-  getATodo(@Param('id') todoId: string) {
+  getATodo(@Param('id') todoId: number) {
     return this.todoService.getATodo(todoId);
   }
 
   @Patch(':id')
   @UsePipes(new RequestValidationPipe(updateTodoBody))
-  updateTodo(@Param('id') todoId: string, @Body() body: UpdateTodoBody) {
+  updateTodo(@Param('id') todoId: number, @Body() body: UpdateTodoBody) {
     return this.todoService.updateTodo(todoId, body.title, body.text);
   }
 
   @Delete(':id')
-  removeTodo(@Param('id') todoId: string) {
+  removeTodo(@Param('id') todoId: number) {
     return this.todoService.removeTodo(todoId);
   }
 }

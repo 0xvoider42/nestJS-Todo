@@ -1,6 +1,6 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class Migration20221024091248 extends Migration {
+export class Migration20221025074218 extends Migration {
   async up(): Promise<void> {
     this.addSql(`
     CREATE OR REPLACE FUNCTION trigger_set_timestamp()
@@ -12,7 +12,7 @@ export class Migration20221024091248 extends Migration {
     $$ LANGUAGE plpgsql;`);
 
     this.addSql(
-      'create table "todo" ("id" varchar(255) not null, "title" varchar(255) not null, "text" varchar(255) not null, "created_at" timestamptz not null DEFAULT NOW(), "updated_at" timestamptz(0) not null DEFAULT NOW(), constraint "todo_pkey" primary key ("id"));',
+      'create table "todo" ("id" serial primary key, "title" varchar(255) not null, "text" varchar(255) not null, "created_at" timestamptz(0) not null DEFAULT NOW(), "updated_at" timestamptz(0) not null DEFAULt NOW());',
     );
 
     this.addSql(`
