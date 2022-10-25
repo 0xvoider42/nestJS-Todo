@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { TodoEntity } from './entities/todo.entity';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { InjectRepository } from '@mikro-orm/nestjs';
+
+import { TodoEntity } from './entities/todo.entity';
 
 @Injectable()
 export class TodoService {
@@ -25,7 +26,7 @@ export class TodoService {
     return response;
   }
 
-  async getTodos() {
+  async getTodos(): Promise<object> {
     const todos = await this.todoRepository.findAll();
 
     this.logger.log('Fetching list of todos', todos);
@@ -33,7 +34,7 @@ export class TodoService {
     return todos;
   }
 
-  async getATodo(todoId: number) {
+  async getATodo(todoId: number): Promise<object> {
     this.logger.log('Fetching a todo with id: ', todoId);
 
     return this.todoRepository.findOne({ id: todoId });
