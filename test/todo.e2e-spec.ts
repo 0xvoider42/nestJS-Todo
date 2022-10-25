@@ -23,7 +23,7 @@ describe('Todo', () => {
   });
 
   describe('Create new todos POST /todos', () => {
-    it('should return 201 and create new todo', () => {
+    it('should return 201 and create new todo', async () => {
       const spy = jest.spyOn(todoService, 'addTodo');
 
       return request(app.getHttpServer())
@@ -38,8 +38,7 @@ describe('Todo', () => {
 
           expect(id).toEqual(expect.any(String));
           expect(
-            todoService.todos.find((todo) => todo.id === id),
-          ).toBeDefined();
+            todoService.addTodo(res.body.tit).toBeDefined();
 
           expect(spy).toHaveBeenCalledTimes(1);
           expect(spy).toBeCalledWith(testTitle, testText);

@@ -1,69 +1,65 @@
-import { HttpException, Injectable, Logger } from '@nestjs/common';
-import { randomUUID } from 'crypto';
-import { Todo } from './todo.model';
+import { Injectable, Logger } from '@nestjs/common';
+import { EntityRepository } from '@mikro-orm/postgresql';
+import { InjectRepository } from '@mikro-orm/nestjs';
+
+import { TodoEntity } from './entities/todo.entity';
 
 @Injectable()
 export class TodoService {
+  constructor(
+    @InjectRepository(TodoEntity)
+    private todoRepository: EntityRepository<TodoEntity>,
+  ) {}
+
   private readonly logger = new Logger(TodoService.name);
 
-  todos: Todo[] = [];
-
-  addTodo(title: string, text: string): Todo {
+  async addTodo(title: string, text: string): Promise<number> {
     this.logger.log('Adding Todo', { title, text });
 
-    const todoId = randomUUID();
-    const newTodo = new Todo(todoId, title, text);
+    const response = await this.todoRepository.nativeInsert({
+      text,
+      title,
+    });
 
-    this.todos.push(newTodo);
+    this.logger.log('added todo to database', response);
 
-    this.logger.log('Updated todo with id', { newTodo });
-
-    return newTodo;
+    return response;
   }
 
-  getTodos(): Todo[] {
-    this.logger.log('Fetching todos list', this.todos);
-    return this.todos;
+  async getTodos(): Promise<TodoEntity[]> {
+    const todos = await this.todoRepository.findAll();
+
+    this.logger.log('Fetching list of todos', todos);
+
+    return todos;
   }
 
-  getATodo(todoId: string): Todo {
+  async getATodo(todoId: number): Promise<TodoEntity> {
     this.logger.log('Fetching a todo with id: ', todoId);
 
-    return this.findTodo(todoId).todo;
+    return this.todoRepository.findOne({ id: todoId });
   }
 
-  updateTodo(todoId: string, title: string, text: string): Todo {
+  async updateTodo(
+    todoId: number,
+    title: string,
+    text: string,
+  ): Promise<number> {
     this.logger.log('Updating a todo', { todoId, title, text });
 
-    const { todo, index } = this.findTodo(todoId);
+    await this.todoRepository.nativeUpdate(todoId, {
+      title: title,
+      text: text,
+    });
 
-    todo.title = title || todo.title;
-    todo.text = text ?? todo.text;
-
-    this.todos[index] = todo;
-
-    return todo;
+    return todoId;
   }
 
-  private findTodo(todoId: string): { todo: Todo; index: number } {
-    this.logger.log('Searching for todo with id: ', todoId);
-
-    const todoIndex = this.todos.findIndex((todo) => todo.id === todoId);
-
-    if (todoIndex === -1) {
-      throw new HttpException("didn't find the todo", 404);
-    }
-
-    return { todo: this.todos[todoIndex], index: todoIndex };
-  }
-
-  removeTodo(todoId: string): { id: string } {
+  async removeTodo(todoId: number): Promise<number> {
     this.logger.log('Removing todo with id: ', todoId);
 
-    const { index } = this.findTodo(todoId);
+    await this.todoRepository.nativeDelete(todoId);
 
-    this.todos.splice(index, 1);
-
-    return { id: todoId };
+    return todoId;
   }
 }
