@@ -6,13 +6,11 @@ import {
 } from '@nestjs/common';
 import { ObjectSchema } from 'joi';
 
-import { Todo } from '../../todo/todo.model';
-
 @Injectable()
 export class RequestValidationPipe implements PipeTransform {
   constructor(private schema: ObjectSchema) {}
 
-  transform(value: Todo, metadata: ArgumentMetadata) {
+  transform(value: any, metadata: ArgumentMetadata) {
     if (metadata.type === 'param') {
       return value;
     }
