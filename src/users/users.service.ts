@@ -1,16 +1,29 @@
-import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@mikro-orm/nestjs';
+
 import { Users } from './entities/user.entity';
+import { UserDto } from './dto/user.dto';
+import { AuthDto } from 'src/authentication/dto/auth.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(Users)
-    private userRepository: EntityRepository<Users>,
+    private usersRepository: EntityRepository<Users>,
   ) {}
 
-  async findByEmail(email: string): Promise<Users | undefined> {
-    return this.userRepository.findOne({ email: email });
+  async findOne(email: string): Promise<Users> {
+    return this.usersRepository.findOne({ email: email });
+  }
+
+  async create(newUser: UserDto): Promise<AuthDto> {
+    const { email, password } = newUser;
+    const response = await this.usersRepository.nativeInsert({
+      email,
+      password,
+    });
+
+    return { id: response, email, password };
   }
 }

@@ -9,12 +9,10 @@ const config: Options = {
   password: process.env.DB_PASSWORD,
   dbName: process.env.DB_NAME,
   entities: [
-    'dist/authentication/entities/*.entity.js',
     'dist/todo/entities/*.entity.js',
     'dist/users/entities/*.entity.js',
   ],
   entitiesTs: [
-    'src/authentication/entities/*.entity.ts',
     'src/todo/entities/*.entity.ts',
     'src/users/entities/*.entity.ts',
   ],
