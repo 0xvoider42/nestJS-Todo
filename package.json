@@ -29,6 +29,8 @@
     "@mikro-orm/reflection": "^5.4.2",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
+    "@nestjs/jwt": "^9.0.0",
+    "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^9.0.0",
     "dotenv": "^16.0.3",
     "joi": "^17.6.3",
