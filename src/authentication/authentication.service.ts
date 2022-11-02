@@ -12,7 +12,7 @@ export class AuthenticationService {
     private usersService: UsersService,
   ) {}
 
-  hashData(data: string): Promise<string> {
+  async hashData(data: string): Promise<string> {
     return bcrypt.hash(data, 10);
   }
 
@@ -53,8 +53,13 @@ export class AuthenticationService {
     return tokens;
   }
 
-  async login(user: any) {
-    const payload = { name: user.name, sub: user.id };
-    return { access_token: this.jwtService.sign(payload) };
+  async login(dto: AuthDto) {
+    const user = await this.usersService.findOne(dto.email);
+
+    await bcrypt.compare(dto.password, user.password);
+
+    const tokens = await this.generateTokens(user.id, user.email);
+
+    return tokens;
   }
 }

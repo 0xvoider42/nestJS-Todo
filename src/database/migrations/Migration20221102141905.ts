@@ -1,6 +1,6 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class Migration20221025075338 extends Migration {
+export class Migration20221102141905 extends Migration {
   async up(): Promise<void> {
     this.addSql(`
     CREATE OR REPLACE FUNCTION trigger_set_timestamp()
@@ -20,9 +20,9 @@ export class Migration20221025075338 extends Migration {
       BEFORE UPDATE ON "todo"
       FOR EACH ROW
       EXECUTE PROCEDURE trigger_set_timestamp();`);
-  }
 
-  async down(): Promise<void> {
-    this.addSql('drop table if exists "todo" cascade;');
+    this.addSql(
+      'create table "users" ("id" serial primary key, "email" varchar(255) not null, "password" varchar(255) not null);',
+    );
   }
 }

@@ -6,16 +6,12 @@ export class Users {
   id: number;
 
   @Property()
-  name: string;
-
-  @Property()
   email: string;
 
   @Property()
   password: string;
 
-  constructor(name: string, email: string, password: string) {
-    this.name = name;
+  constructor(email: string, password: string) {
     this.email = email;
     this.password = password;
   }

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Request } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { Tokens } from 'src/common/Types/Token.type';
 import { AuthenticationService } from './authentication.service';
 import { AuthDto } from './dto/auth.dto';
@@ -12,8 +12,8 @@ export class AuthenticationController {
     return this.authenticationService.signUp(dto);
   }
 
-  @Post('auth/login')
-  async login(@Request() req) {
-    return this.authenticationService.login(req.user);
+  @Post('auth/signin')
+  async login(@Body() dto: AuthDto): Promise<Tokens> {
+    return this.authenticationService.login(dto);
   }
 }

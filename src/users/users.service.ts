@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@mikro-orm/nestjs';
 
 import { Users } from './entities/user.entity';
-import { UserDto } from './dto/user.dto';
 import { AuthDto } from 'src/authentication/dto/auth.dto';
 
 @Injectable()
@@ -17,7 +16,7 @@ export class UsersService {
     return this.usersRepository.findOne({ email: email });
   }
 
-  async create(newUser: UserDto): Promise<AuthDto> {
+  async create(newUser): Promise<AuthDto> {
     const { email, password } = newUser;
     const response = await this.usersRepository.nativeInsert({
       email,

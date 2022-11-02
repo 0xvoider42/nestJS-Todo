@@ -81,15 +81,6 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
-        },
         "email": {
           "name": "email",
           "type": "varchar(255)",
@@ -101,6 +92,15 @@
         },
         "password": {
           "name": "password",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "hash": {
+          "name": "hash",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
