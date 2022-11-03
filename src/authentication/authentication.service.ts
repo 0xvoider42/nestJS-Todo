@@ -30,11 +30,11 @@ export class AuthenticationService {
   }
 
   async signUp(signUpBody: AuthDto): Promise<Token> {
-    const hash = await this.hashData(signUpBody.password);
+    const passwordHash = await this.hashData(signUpBody.password);
 
     const newUser = await this.usersService.create({
       email: signUpBody.email,
-      hash,
+      passwordHash,
     });
 
     const token = await this.generateToken(newUser.id, newUser.email);
@@ -45,7 +45,7 @@ export class AuthenticationService {
   async logIn(logInBody: AuthDto): Promise<Token> {
     const user = await this.usersService.findOne(logInBody.email);
 
-    const verify = await bcrypt.compare(logInBody.password, user.hash);
+    const verify = await bcrypt.compare(logInBody.password, user.passwordHash);
 
     if (!verify) {
       throw new ForbiddenException('Access denied');

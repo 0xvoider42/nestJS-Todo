@@ -7,7 +7,7 @@ import { Users } from './entities/user.entity';
 type aUser = {
   id: number;
   email: string;
-  hash: string;
+  passwordHash: string;
 };
 
 @Injectable()
@@ -20,17 +20,17 @@ export class UsersService {
   async findOne(email: string): Promise<aUser> {
     const user = await this.usersRepository.findOne({ email: email });
 
-    return { id: user.id, email: user.email, hash: user.hash };
+    return { id: user.id, email: user.email, passwordHash: user.passwordHash };
   }
 
   async create(newUser: {
     email: string;
-    hash: string;
+    passwordHash: string;
   }): Promise<{ id: number; email: string }> {
-    const { email, hash } = newUser;
+    const { email, passwordHash } = newUser;
     const response = await this.usersRepository.nativeInsert({
       email,
-      hash,
+      passwordHash,
     });
 
     return { id: response, email };

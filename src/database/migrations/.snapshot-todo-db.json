@@ -90,17 +90,8 @@
           "nullable": false,
           "mappedType": "string"
         },
-        "password": {
-          "name": "password",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
-        },
-        "hash": {
-          "name": "hash",
+        "password_hash": {
+          "name": "password_hash",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
