@@ -1,8 +1,15 @@
 import * as Joi from 'joi';
 
-export const authentication = Joi.object({
+export const signUpValidation = Joi.object({
   email: Joi.string()
     .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
     .required(),
   password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+});
+
+export const signInValidation = Joi.object({
+  email: Joi.string()
+    .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
+    .required(),
+  password: Joi.string().required(),
 });

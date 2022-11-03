@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
+
 import { AuthDto } from './dto/auth.dto';
-import { Tokens } from 'src/common/Types/Token.type';
-import { UsersService } from 'src/users/users.service';
+import { Token } from '../common/Types/Token.type';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthenticationService {
@@ -16,7 +17,7 @@ export class AuthenticationService {
     return bcrypt.hash(data, 10);
   }
 
-  async generateTokens(id: number, email: string): Promise<Tokens> {
+  async generateToken(id: number, email: string): Promise<Token> {
     const token = await this.jwtService.signAsync(
       {
         sub: id,
@@ -28,32 +29,26 @@ export class AuthenticationService {
     return { access_token: token };
   }
 
-  async signUp(dto: AuthDto): Promise<Tokens> {
-    const password = await this.hashData(dto.password);
+  async signUp(signUpBody: AuthDto): Promise<Token> {
+    const password = await this.hashData(signUpBody.password);
 
     const newUser = await this.usersService.create({
-      email: dto.email,
+      email: signUpBody.email,
       password,
     });
 
-    const tokens = await this.generateTokens(newUser.id, newUser.email);
-
-    return tokens;
-  }
-
-  async logIn(dto: AuthDto) {
-    const user = await this.usersService.findOne(dto.email);
-
-    await bcrypt.compare(dto.password, user.password);
-
-    const token = await this.generateTokens(user.id, user.email);
+    const token = await this.generateToken(newUser.id, newUser.email);
 
     return token;
   }
 
-  async logOut(dto: AuthDto) {
-    const user = await this.usersService.findOne(dto.email);
+  async logIn(logInBody: AuthDto): Promise<Token> {
+    const user = await this.usersService.findOne(logInBody.email);
 
-    return this.usersService.update(user);
+    await bcrypt.compare(logInBody.password, user.password);
+
+    const token = await this.generateToken(user.id, user.email);
+
+    return token;
   }
 }

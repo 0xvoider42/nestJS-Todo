@@ -25,14 +25,4 @@ export class UsersService {
 
     return { id: response, email };
   }
-
-  async update(user) {
-    const { id } = user;
-
-    const response = await this.usersRepository.nativeUpdate(id, {
-      password: '',
-    });
-
-    return response;
-  }
 }
