@@ -1,7 +1,8 @@
-import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
+import { BaseEntity, Entity, PrimaryKey, Property } from '@mikro-orm/core';
+import { TodoEntity } from 'src/todo/entities/todo.entity';
 
 @Entity()
-export class Users {
+export class Users extends BaseEntity<TodoEntity, 'createdAt'> {
   @PrimaryKey()
   id: number;
 
@@ -11,7 +12,11 @@ export class Users {
   @Property()
   password: string;
 
+  @Property({ type: 'timestamptz' })
+  createdAt: Date;
+
   constructor(email: string, password: string) {
+    super();
     this.email = email;
     this.password = password;
   }

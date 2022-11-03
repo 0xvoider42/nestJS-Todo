@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { AuthDto } from './dto/auth.dto';
 import { Tokens } from 'src/common/Types/Token.type';
 import { UsersService } from 'src/users/users.service';
@@ -17,27 +17,15 @@ export class AuthenticationService {
   }
 
   async generateTokens(id: number, email: string): Promise<Tokens> {
-    const [token, rf_token] = await Promise.all([
-      this.jwtService.signAsync(
-        {
-          sub: id,
-          email,
-        },
-        { secret: process.env.SECRET_JWT, expiresIn: 60 * 20 },
-      ),
-      this.jwtService.signAsync(
-        {
-          sub: id,
-          email,
-        },
-        { secret: process.env.RF_SECRET_JWT, expiresIn: 60 * 60 * 24 },
-      ),
-    ]);
+    const token = await this.jwtService.signAsync(
+      {
+        sub: id,
+        email,
+      },
+      { secret: process.env.SECRET_JWT, expiresIn: 60 * 60 },
+    );
 
-    return {
-      access_token: token,
-      refresh_token: rf_token,
-    };
+    return { access_token: token };
   }
 
   async signUp(dto: AuthDto): Promise<Tokens> {
@@ -53,13 +41,19 @@ export class AuthenticationService {
     return tokens;
   }
 
-  async login(dto: AuthDto) {
+  async logIn(dto: AuthDto) {
     const user = await this.usersService.findOne(dto.email);
 
     await bcrypt.compare(dto.password, user.password);
 
-    const tokens = await this.generateTokens(user.id, user.email);
+    const token = await this.generateTokens(user.id, user.email);
 
-    return tokens;
+    return token;
+  }
+
+  async logOut(dto: AuthDto) {
+    const user = await this.usersService.findOne(dto.email);
+
+    return this.usersService.update(user);
   }
 }
