@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 
@@ -30,11 +30,11 @@ export class AuthenticationService {
   }
 
   async signUp(signUpBody: AuthDto): Promise<Token> {
-    const password = await this.hashData(signUpBody.password);
+    const hash = await this.hashData(signUpBody.password);
 
     const newUser = await this.usersService.create({
       email: signUpBody.email,
-      password,
+      hash,
     });
 
     const token = await this.generateToken(newUser.id, newUser.email);
@@ -45,7 +45,11 @@ export class AuthenticationService {
   async logIn(logInBody: AuthDto): Promise<Token> {
     const user = await this.usersService.findOne(logInBody.email);
 
-    await bcrypt.compare(logInBody.password, user.password);
+    const verify = await bcrypt.compare(logInBody.password, user.hash);
+
+    if (!verify) {
+      throw new ForbiddenException('Access denied');
+    }
 
     const token = await this.generateToken(user.id, user.email);
 

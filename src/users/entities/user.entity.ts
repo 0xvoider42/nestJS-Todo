@@ -10,9 +10,6 @@ export class Users {
   email: string;
 
   @Property()
-  password: string;
-
-  @Property()
   hash: string;
 
   @Property({ type: 'timestamptz' })
@@ -21,9 +18,8 @@ export class Users {
   @Property({ type: 'timestamptz' })
   updatedAt: Date;
 
-  constructor(email: string, password: string, hash: string) {
+  constructor(email: string, hash: string) {
     this.email = email;
-    this.password = password;
     this.hash = hash;
   }
 }
