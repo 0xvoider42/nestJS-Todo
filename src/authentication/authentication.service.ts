@@ -42,7 +42,7 @@ export class AuthenticationService {
     return token;
   }
 
-  async logIn(logInBody: AuthDto): Promise<Token> {
+  async signIn(logInBody: AuthDto) {
     const user = await this.usersService.findOne(logInBody.email);
 
     const verify = await bcrypt.compare(logInBody.password, user.passwordHash);
@@ -53,6 +53,6 @@ export class AuthenticationService {
 
     const token = await this.generateToken(user.id, user.email);
 
-    return token;
+    return { id: user.id, email: user.email, token };
   }
 }

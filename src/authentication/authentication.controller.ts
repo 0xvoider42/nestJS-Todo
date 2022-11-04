@@ -18,7 +18,7 @@ export class AuthenticationController {
 
   @Post('signin')
   @UsePipes(new RequestValidationPipe(signInValidation))
-  async logIn(@Body() signInBody: AuthDto): Promise<Token> {
-    return this.authenticationService.logIn(signInBody);
+  async signIn(@Body() signInBody: AuthDto) {
+    return this.authenticationService.signIn(signInBody);
   }
 }
