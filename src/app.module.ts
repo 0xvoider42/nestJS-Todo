@@ -7,7 +7,7 @@ import { randomUUID } from 'crypto';
 
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TodoModule } from './todo/todo.module';
-import { UsersModule } from './users/users.module';
+import { UsersModule } from './user/user.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 
 dotenv.config();

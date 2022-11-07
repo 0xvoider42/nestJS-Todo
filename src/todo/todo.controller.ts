@@ -10,11 +10,11 @@ import {
   ParseIntPipe,
   UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 import { addTodoBody, updateTodoBody } from './validation/todo-schema';
 import { RequestValidationPipe } from '../common/pipes/validation.pipe';
 import { TodoService } from './todo.service';
-import { AuthGuard } from '@nestjs/passport';
 
 interface CreateTodoBody {
   title: string;
@@ -31,7 +31,7 @@ export class TodoController {
   constructor(private todoService: TodoService) {}
 
   @Post()
-  @UseGuards(AuthGuard('todosAuth'))
+  @UseGuards(AuthGuard('jwt'))
   @UsePipes(new RequestValidationPipe(addTodoBody))
   addTodo(@Body() body: CreateTodoBody) {
     return this.todoService.addTodo(body.title, body.text);
@@ -48,7 +48,7 @@ export class TodoController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard('todosAuth'))
+  @UseGuards(AuthGuard('jwt'))
   @UsePipes(new RequestValidationPipe(updateTodoBody))
   updateTodo(
     @Param('id', new ParseIntPipe()) todoId: number,
@@ -58,7 +58,7 @@ export class TodoController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('todosAuth'))
+  @UseGuards(AuthGuard('jwt'))
   removeTodo(@Param('id', new ParseIntPipe()) todoId: number) {
     return this.todoService.removeTodo(todoId);
   }

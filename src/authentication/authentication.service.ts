@@ -4,7 +4,7 @@ import * as bcrypt from 'bcryptjs';
 
 import { AuthDto } from './dto/auth.dto';
 import { Token } from '../common/Types/Token.type';
-import { UsersService } from '../users/users.service';
+import { UsersService } from '../user/user.service';
 
 @Injectable()
 export class AuthenticationService {
@@ -42,10 +42,10 @@ export class AuthenticationService {
     return token;
   }
 
-  async signIn(logInBody: AuthDto) {
-    const user = await this.usersService.findOne(logInBody.email);
+  async signIn(signInBody: AuthDto) {
+    const user = await this.usersService.findOne(signInBody.email);
 
-    const verify = await bcrypt.compare(logInBody.password, user.passwordHash);
+    const verify = await bcrypt.compare(signInBody.password, user.passwordHash);
 
     if (!verify) {
       throw new ForbiddenException('Access denied');
