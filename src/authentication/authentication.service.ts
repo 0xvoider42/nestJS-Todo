@@ -4,13 +4,18 @@ import * as bcrypt from 'bcryptjs';
 
 import { AuthDto } from './dto/auth.dto';
 import { Token } from '../common/Types/Token.type';
-import { UsersService } from '../user/user.service';
+import { UserService } from '../user/user.service';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { Users } from 'src/user/entities/user.entity';
+import { EntityRepository } from '@mikro-orm/postgresql';
 
 @Injectable()
 export class AuthenticationService {
   constructor(
+    @InjectRepository(Users)
+    private usersRepository: EntityRepository<Users>,
     private jwtService: JwtService,
-    private usersService: UsersService,
+    private usersService: UserService,
   ) {}
 
   async hashData(data: string): Promise<string> {
@@ -43,7 +48,9 @@ export class AuthenticationService {
   }
 
   async signIn(signInBody: AuthDto) {
-    const user = await this.usersService.findOne(signInBody.email);
+    const user = await this.usersRepository.findOne({
+      email: signInBody.email,
+    });
 
     const verify = await bcrypt.compare(signInBody.password, user.passwordHash);
 

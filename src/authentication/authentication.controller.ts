@@ -12,13 +12,13 @@ export class AuthenticationController {
 
   @Post('signup')
   @UsePipes(new RequestValidationPipe(signUpBody))
-  async signUp(@Body() signUpBody: AuthDto): Promise<Token> {
-    return this.authenticationService.signUp(signUpBody);
+  async signUp(@Body() body: AuthDto): Promise<Token> {
+    return this.authenticationService.signUp(body);
   }
 
   @Post('signin')
   @UsePipes(new RequestValidationPipe(signInBody))
-  async signIn(@Body() signInBody: AuthDto) {
-    return this.authenticationService.signIn(signInBody);
+  async signIn(@Body() body: AuthDto) {
+    return this.authenticationService.signIn(body);
   }
 }
