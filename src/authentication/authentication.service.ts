@@ -34,15 +34,17 @@ export class AuthenticationService {
     return { access_token: token };
   }
 
-  async signUp(signUpBody: AuthDto): Promise<Token> {
+  async emailCheck(email: string) {
     const emailExists = await this.usersRepository.findOne({
-      email: signUpBody.email,
+      email,
     });
 
     if (emailExists) {
       throw new HttpException('Email already exists', 409);
     }
+  }
 
+  async signUp(signUpBody: AuthDto): Promise<Token> {
     const passwordHash = await this.hashData(signUpBody.password);
 
     const newUser = await this.userService.create({

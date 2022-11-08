@@ -16,6 +16,8 @@ export class AuthenticationController {
   @Post('signup')
   @UsePipes(new RequestValidationPipe(signUpBodyValidation))
   async signUp(@Body() signUpBody: AuthDto): Promise<Token> {
+    await this.authenticationService.emailCheck(signUpBody.email);
+
     return this.authenticationService.signUp(signUpBody);
   }
 
