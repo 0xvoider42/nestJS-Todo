@@ -1,21 +1,21 @@
+import { EntityRepository } from '@mikro-orm/postgresql';
 import { ForbiddenException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@mikro-orm/nestjs';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 
 import { AuthDto } from './dto/auth.dto';
 import { Token } from '../common/Types/Token.type';
+import { Users } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
-import { InjectRepository } from '@mikro-orm/nestjs';
-import { Users } from 'src/user/entities/user.entity';
-import { EntityRepository } from '@mikro-orm/postgresql';
 
 @Injectable()
 export class AuthenticationService {
   constructor(
+    private jwtService: JwtService,
+    private userService: UserService,
     @InjectRepository(Users)
     private usersRepository: EntityRepository<Users>,
-    private jwtService: JwtService,
-    private usersService: UserService,
   ) {}
 
   async hashData(data: string): Promise<string> {
@@ -37,7 +37,7 @@ export class AuthenticationService {
   async signUp(signUpBody: AuthDto): Promise<Token> {
     const passwordHash = await this.hashData(signUpBody.password);
 
-    const newUser = await this.usersService.create({
+    const newUser = await this.userService.create({
       email: signUpBody.email,
       passwordHash,
     });
