@@ -5,10 +5,10 @@ import { LoggerModule } from 'nestjs-pino';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { randomUUID } from 'crypto';
 
+import { AuthenticationModule } from './authentication/authentication.module';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TodoModule } from './todo/todo.module';
 import { UsersModule } from './user/user.module';
-import { AuthenticationModule } from './authentication/authentication.module';
 
 dotenv.config();
 

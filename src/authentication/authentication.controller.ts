@@ -4,8 +4,8 @@ import { AuthDto } from './dto/auth.dto';
 import { AuthenticationService } from './authentication.service';
 import { RequestValidationPipe } from '../common/pipes/validation.pipe';
 import {
-  signUpBodyValidation,
   signInBodyValidation,
+  signUpBodyValidation,
 } from './validation/auth-schema';
 import { Token } from '../common/Types/Token.type';
 
