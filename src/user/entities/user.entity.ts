@@ -1,4 +1,4 @@
-import { Entity, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import { Entity, Index, PrimaryKey, Property, Unique } from '@mikro-orm/core';
 
 @Entity()
 export class Users {
@@ -7,6 +7,7 @@ export class Users {
 
   @Property()
   @Unique()
+  @Index({ name: 'email_index' })
   email: string;
 
   @Property()

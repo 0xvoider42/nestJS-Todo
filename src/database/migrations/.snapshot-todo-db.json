@@ -128,6 +128,15 @@
             "email"
           ],
           "composite": false,
+          "keyName": "email_index",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "email"
+          ],
+          "composite": false,
           "keyName": "users_email_unique",
           "primary": false,
           "unique": true

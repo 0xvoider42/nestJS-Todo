@@ -1,5 +1,5 @@
 import { EntityRepository } from '@mikro-orm/postgresql';
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
@@ -35,6 +35,14 @@ export class AuthenticationService {
   }
 
   async signUp(signUpBody: AuthDto): Promise<Token> {
+    const emailExists = await this.usersRepository.findOne({
+      email: signUpBody.email,
+    });
+
+    if (emailExists) {
+      throw new HttpException('Email already exists', 409);
+    }
+
     const passwordHash = await this.hashData(signUpBody.password);
 
     const newUser = await this.userService.create({
