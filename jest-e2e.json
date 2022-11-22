@@ -2,12 +2,13 @@
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": ".",
   "testEnvironment": "node",
-  "testRegex": ".service.e2e-spec.ts$",
+  "testRegex": ".e2e-spec.ts$",
   "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
+    "^.+\\.(t|j)sx?$": ["@swc/jest"]
   },
   "moduleNameMapper": {
     "src/{.*}": "<rootDir>/src/$1"
   },
-  "setupFiles": ["<rootDir>/pre-test.ts"]
+  "setupFiles": ["<rootDir>/pre-test.ts"],
+  "globalTeardown": "<rootDir>/after-test.ts"
 }
