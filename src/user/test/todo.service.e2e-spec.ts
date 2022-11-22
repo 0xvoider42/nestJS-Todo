@@ -1,5 +1,4 @@
 import { Test } from '@nestjs/testing';
-import { execSync } from 'child_process';
 
 import { AppModule } from '../../app.module';
 import { AuthenticationService } from '../../authentication/authentication.service';
@@ -13,21 +12,6 @@ describe('Todo service', () => {
     }).compile();
 
     service = await moduleRef.get(AuthenticationService);
-
-    try {
-      execSync('docker compose -f test.docker-compose.yml up -d');
-      execSync('npx mikro-orm migration:up');
-    } catch (error) {
-      console.log(error);
-    }
-  });
-
-  afterAll(() => {
-    try {
-      execSync('docker compose down');
-    } catch (error) {
-      console.log(error);
-    }
   });
 
   describe('Create todo', () => {
