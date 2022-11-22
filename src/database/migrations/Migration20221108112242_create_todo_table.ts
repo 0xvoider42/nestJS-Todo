@@ -1,6 +1,6 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class Migration20221025075338 extends Migration {
+export class Migration20221108112242 extends Migration {
   async up(): Promise<void> {
     this.addSql(`
     CREATE OR REPLACE FUNCTION trigger_set_timestamp()

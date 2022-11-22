@@ -69,6 +69,90 @@
       ],
       "checks": [],
       "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "password_hash": {
+          "name": "password_hash",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "users",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "email"
+          ],
+          "composite": false,
+          "keyName": "email_index",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "email"
+          ],
+          "composite": false,
+          "keyName": "users_email_unique",
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "users_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
     }
   ]
 }
