@@ -18,6 +18,7 @@ const config: Options = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   dbName: process.env.DB_NAME,
+  allowGlobalContext: !!process.env.MIKRO_ORM_ALLOW_GLOBAL_CONTEXT,
   entities: ['dist/todo/**/*.entity.js', 'dist/user/**/*.entity.js'],
   entitiesTs: ['src/todo/**/*.entity.ts', 'src/user/**/*.entity.ts'],
   metadataProvider: TsMorphMetadataProvider,

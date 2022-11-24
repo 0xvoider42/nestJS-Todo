@@ -18,15 +18,15 @@ module.exports = async () => {
 
     // Remove any other connection before droping database
     execSync(
-      `docker container exec todo_container psql -U ${process.env.DB_USER} -W postgres --quiet -c "UPDATE pg_database SET datallowconn = 'false' WHERE datname = '${process.env.DB_NAME}'; SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${process.env.DB_NAME}';"`,
+      `docker container exec todo_postgres psql -U ${process.env.DB_USER} -W postgres --quiet -c "UPDATE pg_database SET datallowconn = 'false' WHERE datname = '${process.env.DB_NAME}'; SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${process.env.DB_NAME}';"`,
     );
 
     execSync(
-      `docker container exec todo_container dropdb -U ${process.env.DB_USER} ${process.env.DB_NAME} --if-exists`,
+      `docker container exec todo_postgres dropdb -U ${process.env.DB_USER} ${process.env.DB_NAME} --if-exists`,
     );
 
     execSync(
-      `docker container exec todo_container createdb -U ${process.env.DB_USER} ${process.env.DB_NAME}`,
+      `docker container exec todo_postgres createdb -U ${process.env.DB_USER} ${process.env.DB_NAME}`,
     );
 
     execSync('npx mikro-orm migration:up');
@@ -38,7 +38,7 @@ module.exports = async () => {
 const waitForDatabaseConnection = async () => {
   try {
     const response = await exec(
-      `docker container exec todo_container pg_isready`,
+      `docker container exec todo_postgres pg_isready`,
     );
 
     if (response.stdout.includes('accepting connections')) {
