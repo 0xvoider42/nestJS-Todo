@@ -62,13 +62,9 @@ export class AuthenticationService {
       email: signInBody.email,
     });
 
-    if (!signInBody.password) {
-      return 'Password is needed to sign in';
-    }
-
-    const verify = await bcrypt.compare(signInBody.password, user.passwordHash);
-
-    if (!verify) {
+    try {
+      await bcrypt.compare(signInBody.password, user.passwordHash);
+    } catch (error) {
       throw new ForbiddenException('Check your password or email');
     }
 
