@@ -12,6 +12,10 @@ import { dbConnection } from '../../../test/utils/index';
 import { Users } from '../entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { ForbiddenException } from '@nestjs/common';
+import {
+  NotNullConstraintViolationException,
+  UniqueConstraintViolationException,
+} from '@mikro-orm/core';
 
 describe('User service', () => {
   let service: AuthenticationService;
@@ -45,6 +49,24 @@ describe('User service', () => {
       expect(await bcrypt.compare(password, user.passwordHash)).toBe(true);
 
       expect(user).toBeDefined();
+    });
+
+    it('should not allow creating new user if email is already in database', async () => {
+      expect(() => service.signUp({ email, password })).rejects.toThrow(
+        new UniqueConstraintViolationException(new Error()).message,
+      );
+    });
+
+    it('should not allow creating new user if email is missing', async () => {
+      expect(() => service.signUp({ password })).rejects.toThrow(
+        new NotNullConstraintViolationException(new Error()).message,
+      );
+    });
+
+    it('should not allow creating new user if password is missing', async () => {
+      expect(() => service.signUp({ email })).rejects.toThrow(
+        new ForbiddenException('Password is missing'),
+      );
     });
   });
 

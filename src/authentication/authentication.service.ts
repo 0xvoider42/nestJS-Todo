@@ -45,7 +45,12 @@ export class AuthenticationService {
   }
 
   async signUp(signUpBody: AuthDto): Promise<Token> {
-    const passwordHash = await this.hashData(signUpBody.password);
+    let passwordHash: string;
+    try {
+      passwordHash = await this.hashData(signUpBody.password);
+    } catch (error) {
+      throw new ForbiddenException('Password is missing');
+    }
 
     const newUser = await this.userService.create({
       email: signUpBody.email,
