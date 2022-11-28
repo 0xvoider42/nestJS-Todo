@@ -38,9 +38,7 @@ describe('User service', () => {
       const email = 'ee@ee.com';
       const password = 'qwerty';
 
-      // console.log(await createUser({ email, password }));
-
-      const getToken = await createUser({ email, password });
+      const getToken = await service.signUp({ email, password });
       const user = await connection.findOne(Users, { email });
 
       expect(getToken.access_token).toEqual(expect.any(String));
@@ -58,7 +56,7 @@ describe('User service', () => {
       const email = 'ee@ee.com';
       const password = 'qwerty';
 
-      expect(() => createUser({ email, password })).rejects.toThrow(
+      expect(() => service.signUp({ email, password })).rejects.toThrow(
         new UniqueConstraintViolationException(new Error()).message,
       );
     });
@@ -66,14 +64,14 @@ describe('User service', () => {
     it('should not allow creating new user if email is missing', async () => {
       const password = 'qwerty';
 
-      expect(() => createUser({ password })).rejects.toThrow(
+      expect(() => service.signUp({ password })).rejects.toThrow(
         new NotNullConstraintViolationException(new Error()).message,
       );
     });
 
     it('should not allow creating new user if password is missing', async () => {
       const email = 'ee@ee.com';
-      expect(() => createUser({ email })).rejects.toThrow(
+      expect(() => service.signUp({ email })).rejects.toThrow(
         new ForbiddenException('Password is not provided'),
       );
     });
@@ -81,36 +79,46 @@ describe('User service', () => {
 
   describe('signIn', () => {
     it('should allow user to sign in with correct credentials', async () => {
-      const email = 'ee@ee.com';
+      const email = 'test@1.com';
       const password = 'qwerty';
+
+      await createUser({ email: 'test@1.com', password: 'qwerty' });
 
       const signInUser = await service.signIn({ email, password });
 
       expect(signInUser).toEqual(
-        expect.objectContaining({ id: 1, email, token: expect.any(Object) }),
+        expect.objectContaining({
+          id: signInUser.id,
+          email,
+          token: expect.any(Object),
+        }),
       );
 
       expect(jwt.decode(signInUser.token.access_token)).toEqual(
-        expect.objectContaining({ sub: 1, email }),
+        expect.objectContaining({ sub: signInUser.id, email }),
       );
     });
 
     it('should give an error if user is missing one of the parameters during sing in', async () => {
-      const email = 'ee@ee.com';
+      const email = 'test@2.com';
       const password = 'qwerty';
+
+      await createUser({ email: 'test@2.com', password: 'qwerty' });
 
       expect(() => service.signIn({ email })).rejects.toThrow(
         new ForbiddenException('Check your password or email'),
       );
 
       expect(() => service.signIn({ password })).rejects.toThrow(
-        new ForbiddenException('Check your password or email'),
+        new ForbiddenException('User does not exist'),
       );
     });
 
     it('should give an error if user has incorrect parameters during sing in', async () => {
-      const email = 'ee@ee.com';
+      const email = 'test@3.com';
       const password = 'qwerty';
+
+      await createUser({ email: 'test@3.com', password: 'qwerty' });
 
       expect(() =>
         service.signIn({ email: 'incorrect', password }),

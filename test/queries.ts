@@ -20,20 +20,20 @@ const generateToken = async (id: number, email: string) => {
       sub: id,
       email,
     },
-    { secret: process.env.SECRET_JWT, expiresIn: 60 * 60 },
+    { secret: process.env.SECRET_JWT, expiresIn: 60 },
   );
 
   return token;
 };
 
-export const createUser = async (data) => {
+export const createUser = async (data: any) => {
   connection = await dbConnection();
 
-  const password = await bcrypt.hash(data.password, 10);
+  const passwordHash = await bcrypt.hash(data.password, 10);
 
   const response = await connection.nativeInsert(Users, {
     email: data.email,
-    passwordHash: password,
+    passwordHash,
   });
 
   const token = await generateToken(response, data.email);

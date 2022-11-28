@@ -66,6 +66,14 @@ export class AuthenticationService {
       email: signInBody.email,
     });
 
+    if (!user) {
+      throw new ForbiddenException('User does not exist');
+    }
+
+    if (!signInBody.password) {
+      throw new ForbiddenException('Check your password or email');
+    }
+
     const validatePassword = await bcrypt.compare(
       signInBody.password,
       user.passwordHash,
