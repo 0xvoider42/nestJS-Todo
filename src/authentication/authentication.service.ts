@@ -67,6 +67,10 @@ export class AuthenticationService {
       email: signInBody.email,
     });
 
+    if (!(await bcrypt.compare(signInBody.password, user.passwordHash))) {
+      throw new ForbiddenException('Check your password or email');
+    }
+
     try {
       await bcrypt.compare(signInBody.password, user.passwordHash);
     } catch (error) {

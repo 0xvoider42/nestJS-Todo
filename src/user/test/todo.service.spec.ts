@@ -71,7 +71,7 @@ describe('User service', () => {
   });
 
   describe('SignIn', () => {
-    it('should check if user can sign in', async () => {
+    it('should allow user to sign in with correct credentials', async () => {
       const signInUser = await service.signIn({ email, password });
 
       expect(signInUser).toEqual(
@@ -83,10 +83,22 @@ describe('User service', () => {
       );
     });
 
-    it('should give an error if user is missing one of the parameters during sing in', async () => {
+    it('should give an error if user is missing one of the parameters or is incorrect during sing in', async () => {
       expect(() => service.signIn({ email })).rejects.toThrow(
         new ForbiddenException('Check your password or email'),
       );
+
+      expect(() =>
+        service.signIn({ email: 'incorrect', password }),
+      ).rejects.toThrow(new ForbiddenException('Check your password or email'));
+
+      expect(() => service.signIn({ password })).rejects.toThrow(
+        new ForbiddenException('Check your password or email'),
+      );
+
+      expect(() =>
+        service.signIn({ email, password: 'incorrect' }),
+      ).rejects.toThrow(new ForbiddenException('Check your password or email'));
     });
   });
 });
