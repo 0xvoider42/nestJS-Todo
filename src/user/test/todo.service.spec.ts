@@ -23,6 +23,15 @@ describe('User service', () => {
   let connection: EntityManager<AbstractSqlDriver<AbstractSqlConnection>>;
   let jwt: JwtService;
 
+  const randomStr = () => {
+    return (Math.random() + 1).toString(36).substring(10);
+  };
+
+  const randomEmail = () => {
+    const str = (Math.random() + 1).toString(36).substring(10);
+    return `${str}@ee.com`;
+  };
+
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
@@ -79,10 +88,10 @@ describe('User service', () => {
 
   describe('signIn', () => {
     it('should allow user to sign in with correct credentials', async () => {
-      const email = 'test@1.com';
-      const password = 'qwerty';
+      const email = randomEmail.toString();
+      const password = randomStr.toString();
 
-      await createUser({ email: 'test@1.com', password: 'qwerty' });
+      await createUser({ email, password });
 
       const signInUser = await service.signIn({ email, password });
 
@@ -100,10 +109,10 @@ describe('User service', () => {
     });
 
     it('should give an error if user is missing one of the parameters during sing in', async () => {
-      const email = 'test@2.com';
-      const password = 'qwerty';
+      const email = randomEmail();
+      const password = randomStr();
 
-      await createUser({ email: 'test@2.com', password: 'qwerty' });
+      await createUser({ email, password });
 
       expect(() => service.signIn({ email })).rejects.toThrow(
         new ForbiddenException('Check your password or email'),
@@ -115,17 +124,20 @@ describe('User service', () => {
     });
 
     it('should give an error if user has incorrect parameters during sing in', async () => {
-      const email = 'test@3.com';
-      const password = 'qwerty';
-
       await createUser({ email: 'test@3.com', password: 'qwerty' });
 
       expect(() =>
-        service.signIn({ email: 'incorrect', password }),
+        service.signIn({
+          email: randomEmail(),
+          password: randomStr(),
+        }),
       ).rejects.toThrow(new ForbiddenException('Check your password or email'));
 
       expect(() =>
-        service.signIn({ email, password: 'incorrect' }),
+        service.signIn({
+          email: randomEmail(),
+          password: randomStr(),
+        }),
       ).rejects.toThrow(new ForbiddenException('Check your password or email'));
     });
   });
