@@ -45,12 +45,11 @@ export class AuthenticationService {
   }
 
   async signUp(signUpBody: AuthDto): Promise<Token> {
-    let passwordHash: string;
-    try {
-      passwordHash = await this.hashData(signUpBody.password);
-    } catch (error) {
-      throw new ForbiddenException('Password is missing');
+    if (!signUpBody.password) {
+      throw new ForbiddenException('Password is not provided');
     }
+
+    const passwordHash = await this.hashData(signUpBody.password);
 
     const newUser = await this.userService.create({
       email: signUpBody.email,
@@ -67,13 +66,12 @@ export class AuthenticationService {
       email: signInBody.email,
     });
 
-    if (!(await bcrypt.compare(signInBody.password, user.passwordHash))) {
-      throw new ForbiddenException('Check your password or email');
-    }
+    const validatePassword = await bcrypt.compare(
+      signInBody.password,
+      user.passwordHash,
+    );
 
-    try {
-      await bcrypt.compare(signInBody.password, user.passwordHash);
-    } catch (error) {
+    if (!validatePassword) {
       throw new ForbiddenException('Check your password or email');
     }
 
