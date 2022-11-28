@@ -16,6 +16,7 @@ import { AppModule } from '../../app.module';
 import { AuthenticationService } from '../../authentication/authentication.service';
 import { dbConnection } from '../../../test/utils/index';
 import { Users } from '../entities/user.entity';
+import { createUser } from '../../../test/queries';
 
 describe('User service', () => {
   let service: AuthenticationService;
@@ -37,7 +38,9 @@ describe('User service', () => {
       const email = 'ee@ee.com';
       const password = 'qwerty';
 
-      const getToken = await service.signUp({ email, password });
+      // console.log(await createUser({ email, password }));
+
+      const getToken = await createUser({ email, password });
       const user = await connection.findOne(Users, { email });
 
       expect(getToken.access_token).toEqual(expect.any(String));
@@ -55,7 +58,7 @@ describe('User service', () => {
       const email = 'ee@ee.com';
       const password = 'qwerty';
 
-      expect(() => service.signUp({ email, password })).rejects.toThrow(
+      expect(() => createUser({ email, password })).rejects.toThrow(
         new UniqueConstraintViolationException(new Error()).message,
       );
     });
@@ -63,14 +66,14 @@ describe('User service', () => {
     it('should not allow creating new user if email is missing', async () => {
       const password = 'qwerty';
 
-      expect(() => service.signUp({ password })).rejects.toThrow(
+      expect(() => createUser({ password })).rejects.toThrow(
         new NotNullConstraintViolationException(new Error()).message,
       );
     });
 
     it('should not allow creating new user if password is missing', async () => {
       const email = 'ee@ee.com';
-      expect(() => service.signUp({ email })).rejects.toThrow(
+      expect(() => createUser({ email })).rejects.toThrow(
         new ForbiddenException('Password is not provided'),
       );
     });
