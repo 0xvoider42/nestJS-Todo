@@ -1,8 +1,3 @@
-import {
-  AbstractSqlConnection,
-  AbstractSqlDriver,
-  EntityManager,
-} from '@mikro-orm/postgresql';
 import * as bcrypt from 'bcryptjs';
 import {
   NotNullConstraintViolationException,
@@ -17,9 +12,10 @@ import { AuthenticationService } from '../authentication.service';
 import { createUser } from '../../../test/queries';
 import { dbConnection, randomEmail, randomStr } from '../../../test/utils';
 import { Users } from '../../user/entities/user.entity';
+import { TestDataBase } from 'test/types';
 
 describe('AuthenticationService', () => {
-  let connection: EntityManager<AbstractSqlDriver<AbstractSqlConnection>>;
+  let connection: TestDataBase;
   let jwt: JwtService;
   let service: AuthenticationService;
 
@@ -33,24 +29,28 @@ describe('AuthenticationService', () => {
     jwt = new JwtService();
   });
 
-  it('should generate new jwt token', async () => {
-    const id = 1;
-    const email = randomEmail();
-    const getToken = await service.generateToken(id, email);
+  describe('generateToken', () => {
+    it('should generate new jwt token', async () => {
+      const id = 1;
+      const email = randomEmail();
+      const getToken = await service.generateToken(id, email);
 
-    expect(jwt.decode(getToken.access_token)).toEqual(
-      expect.objectContaining({ email, sub: id }),
-    );
+      expect(jwt.decode(getToken.access_token)).toEqual(
+        expect.objectContaining({ email, sub: id }),
+      );
+    });
   });
 
-  it('should throw an error if email is already in database', async () => {
-    const email = randomEmail();
+  describe('emailCheck', () => {
+    it('should throw an error if email is already in database', async () => {
+      const email = randomEmail();
 
-    await createUser({ email, password: randomStr() });
+      await createUser({ email, password: randomStr() });
 
-    expect(() => service.emailCheck(email)).rejects.toThrow(
-      new HttpException('Email already exists', 409),
-    );
+      expect(() => service.emailCheck(email)).rejects.toThrow(
+        new HttpException('Email already exists', 409),
+      );
+    });
   });
 
   describe('signUp', () => {

@@ -53,6 +53,6 @@ const waitForDatabaseConnection = async () => {
   }
 };
 
-const wait = (time) => {
+const wait = (time: number) => {
   return new Promise((resolve) => setTimeout(() => resolve(undefined), time));
 };
