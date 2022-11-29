@@ -14,23 +14,18 @@ import { Test } from '@nestjs/testing';
 
 import { AppModule } from '../../app.module';
 import { AuthenticationService } from '../../authentication/authentication.service';
-import { dbConnection } from '../../../test/utils/index';
-import { Users } from '../entities/user.entity';
 import { createUser } from '../../../test/queries';
+import {
+  dbConnection,
+  randomEmail,
+  randomStr,
+} from '../../../test/utils/index';
+import { Users } from '../entities/user.entity';
 
-describe('User service', () => {
-  let service: AuthenticationService;
+describe('AuthenticationService', () => {
   let connection: EntityManager<AbstractSqlDriver<AbstractSqlConnection>>;
   let jwt: JwtService;
-
-  const randomStr = () => {
-    return (Math.random() + 1).toString(36).substring(10);
-  };
-
-  const randomEmail = () => {
-    const str = (Math.random() + 1).toString(36).substring(10);
-    return `${str}@ee.com`;
-  };
+  let service: AuthenticationService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -44,8 +39,8 @@ describe('User service', () => {
 
   describe('signUp', () => {
     it('should create new user', async () => {
-      const email = 'ee@ee.com';
-      const password = 'qwerty';
+      const email = randomEmail();
+      const password = randomStr();
 
       const getToken = await service.signUp({ email, password });
       const user = await connection.findOne(Users, { email });
@@ -62,8 +57,10 @@ describe('User service', () => {
     });
 
     it('should not allow creating new user if email is already in database', async () => {
-      const email = 'ee@ee.com';
-      const password = 'qwerty';
+      const email = randomEmail();
+      const password = randomStr();
+
+      await createUser({ email, password });
 
       expect(() => service.signUp({ email, password })).rejects.toThrow(
         new UniqueConstraintViolationException(new Error()).message,
@@ -71,7 +68,8 @@ describe('User service', () => {
     });
 
     it('should not allow creating new user if email is missing', async () => {
-      const password = 'qwerty';
+      const password = randomStr();
+      await createUser({ email: randomEmail(), password });
 
       expect(() => service.signUp({ password })).rejects.toThrow(
         new NotNullConstraintViolationException(new Error()).message,
@@ -79,7 +77,9 @@ describe('User service', () => {
     });
 
     it('should not allow creating new user if password is missing', async () => {
-      const email = 'ee@ee.com';
+      const email = randomEmail();
+      await createUser({ email, password: randomStr() });
+
       expect(() => service.signUp({ email })).rejects.toThrow(
         new ForbiddenException('Password is not provided'),
       );
@@ -88,8 +88,8 @@ describe('User service', () => {
 
   describe('signIn', () => {
     it('should allow user to sign in with correct credentials', async () => {
-      const email = randomEmail.toString();
-      const password = randomStr.toString();
+      const email = randomEmail();
+      const password = randomStr();
 
       await createUser({ email, password });
 
@@ -124,7 +124,7 @@ describe('User service', () => {
     });
 
     it('should give an error if user has incorrect parameters during sing in', async () => {
-      await createUser({ email: 'test@3.com', password: 'qwerty' });
+      await createUser({ email: randomEmail(), password: randomStr() });
 
       expect(() =>
         service.signIn({

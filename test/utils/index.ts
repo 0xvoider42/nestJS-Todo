@@ -8,3 +8,12 @@ export const dbConnection = async () => {
   const em = orm.em as EntityManager;
   return em;
 };
+
+export const randomStr = () => {
+  return (Math.random() + 1).toString(36).substring(10);
+};
+
+export const randomEmail = () => {
+  const str = (Math.random() + 1).toString(36).substring(10);
+  return `${str}@ee.com`;
+};
