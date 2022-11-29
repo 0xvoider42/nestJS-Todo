@@ -14,6 +14,5 @@ export const randomStr = () => {
 };
 
 export const randomEmail = () => {
-  const str = (Math.random() + 1).toString(36).substring(10);
-  return `${str}@ee.com`;
+  return `${randomStr()}@ee.com`;
 };

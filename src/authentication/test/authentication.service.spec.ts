@@ -8,19 +8,15 @@ import {
   NotNullConstraintViolationException,
   UniqueConstraintViolationException,
 } from '@mikro-orm/core';
-import { ForbiddenException } from '@nestjs/common';
+import { ForbiddenException, HttpException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 
 import { AppModule } from '../../app.module';
-import { AuthenticationService } from '../../authentication/authentication.service';
+import { AuthenticationService } from '../authentication.service';
 import { createUser } from '../../../test/queries';
-import {
-  dbConnection,
-  randomEmail,
-  randomStr,
-} from '../../../test/utils/index';
-import { Users } from '../entities/user.entity';
+import { dbConnection, randomEmail, randomStr } from '../../../test/utils';
+import { Users } from '../../user/entities/user.entity';
 
 describe('AuthenticationService', () => {
   let connection: EntityManager<AbstractSqlDriver<AbstractSqlConnection>>;
@@ -35,6 +31,26 @@ describe('AuthenticationService', () => {
     service = await moduleRef.get(AuthenticationService);
     connection = await dbConnection();
     jwt = new JwtService();
+  });
+
+  it('should generate new jwt token', async () => {
+    const id = 1;
+    const email = randomEmail();
+    const getToken = await service.generateToken(id, email);
+
+    expect(jwt.decode(getToken.access_token)).toEqual(
+      expect.objectContaining({ email, sub: id }),
+    );
+  });
+
+  it('should throw an error if email is already in database', async () => {
+    const email = randomEmail();
+
+    await createUser({ email, password: randomStr() });
+
+    expect(() => service.emailCheck(email)).rejects.toThrow(
+      new HttpException('Email already exists', 409),
+    );
   });
 
   describe('signUp', () => {

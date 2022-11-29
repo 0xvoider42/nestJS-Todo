@@ -1,6 +1,7 @@
 import * as request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
+
 import { AppModule } from '../src/app.module';
 import { TodoService } from '../src/todo/todo.service';
 
@@ -38,7 +39,8 @@ describe('Todo', () => {
 
           expect(id).toEqual(expect.any(String));
           expect(
-            todoService.addTodo(res.body.tit).toBeDefined();
+            todoService.addTodo(res.body.title, res.body.text),
+          ).toBeDefined();
 
           expect(spy).toHaveBeenCalledTimes(1);
           expect(spy).toBeCalledWith(testTitle, testText);
@@ -100,10 +102,10 @@ describe('Todo', () => {
   });
 
   describe('Fetches all todos GET /todos', () => {
-    it('should return 200 if todos are created', () => {
+    it('should return 200 if todos are created', async () => {
       const id = '1';
 
-      todoService.todos.push({ id, title: 'new title', text: 'new text' });
+      // todoService.todos.push({ id, title: 'new title', text: 'new text' });
       const spy = jest.spyOn(todoService, 'getTodos');
 
       return request(app.getHttpServer())
@@ -121,7 +123,7 @@ describe('Todo', () => {
     it('should return 200 and a todo corresponding to passed id', () => {
       const id = '2';
 
-      todoService.todos.push({ id, title: 'new title', text: 'new text' });
+      // todoService.todos.push({ id, title: 'new title', text: 'new text' });
       const spy = jest.spyOn(todoService, 'getATodo');
 
       return request(app.getHttpServer())
@@ -135,7 +137,7 @@ describe('Todo', () => {
           expect(spy).toHaveBeenCalledTimes(1);
           expect(spy).toBeCalledWith(id);
 
-          todoService.todos = [];
+          // todoService.todos = [];
         });
     });
   });
@@ -144,7 +146,7 @@ describe('Todo', () => {
     it('should return 200 and edit title of a todo corresponding to id', async () => {
       const id = '2';
 
-      todoService.todos.push({ id, title: 'new title', text: 'new text' });
+      // todoService.todos.push({ id, title: 'new title', text: 'new text' });
       const spy = jest.spyOn(todoService, 'updateTodo');
 
       return request(app.getHttpServer())
@@ -157,23 +159,23 @@ describe('Todo', () => {
 
           expect(title).toEqual('update');
           expect(text).toEqual('update text');
-          expect(todoService.todos.find((todo) => todo.id === id)).toEqual({
-            id,
-            text: 'update text',
-            title: 'update',
-          });
+          // expect(todoService.todos.find((todo) => todo.id === id)).toEqual({
+          //   id,
+          //   text: 'update text',
+          //   title: 'update',
+          // });
 
           expect(spy).toHaveBeenCalledTimes(1);
           expect(spy).toHaveBeenCalledWith(id, 'update', 'update text');
 
-          todoService.todos = [];
+          // todoService.todos = [];
         });
     });
 
     it('should return 400 and an array of errors if update body is empty', () => {
       const id = '4';
 
-      todoService.todos.push({ id, title: 'new title', text: 'new text' });
+      // todoService.todos.push({ id, title: 'new title', text: 'new text' });
       const spy = jest.spyOn(todoService, 'updateTodo');
 
       return request(app.getHttpServer())
@@ -197,16 +199,16 @@ describe('Todo', () => {
 
   describe('Removes a todo DELETE /todos/:id', () => {
     it('should return 200 and remove a todo corresponding to the id', async () => {
-      const id = '3';
+      const id = 3;
 
-      todoService.todos.push({ id, title: 'new title', text: 'new text' });
+      // todoService.todos.push({ id, title: 'new title', text: 'new text' })
       const spy = jest.spyOn(todoService, 'removeTodo');
 
       return request(app.getHttpServer())
         .delete(`/todos/${id}`)
         .expect(200)
-        .then(() => {
-          expect(todoService.getTodos().find((todo) => todo.id !== id));
+        .then(async () => {
+          expect((await todoService.getTodos()).find((todo) => todo.id !== id));
 
           expect(spy).toBeCalledTimes(1);
         });
