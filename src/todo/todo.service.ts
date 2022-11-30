@@ -17,8 +17,8 @@ export class TodoService {
     this.logger.log('Adding Todo', { title, text });
 
     const response = await this.todoRepository.nativeInsert({
-      text,
       title,
+      text,
     });
 
     this.logger.log('added todo to database', response);

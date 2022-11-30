@@ -3,12 +3,12 @@ services:
   api:
     build: .
     environment:
-      - DB_HOST=todo_container
+      - DB_HOST=todo_postgres
       - DB_PORT=5432
     ports:
       - 3000:3000
   db:
-    container_name: todo_container
+    container_name: todo_postgres
     image: postgres
     environment:
       POSTGRES_USER: root

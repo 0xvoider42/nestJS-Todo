@@ -1,5 +1,15 @@
 import { MikroOrmModuleOptions as Options } from '@mikro-orm/nestjs';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+dotenv.config({
+  path: path.join(
+    process.cwd(),
+    process.env.NODE_ENV === 'test' ? './.env.test' : './.env',
+  ),
+  override: true,
+});
 
 const config: Options = {
   type: 'postgresql',

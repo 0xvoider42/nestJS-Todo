@@ -45,6 +45,10 @@ export class AuthenticationService {
   }
 
   async signUp(signUpBody: AuthDto): Promise<Token> {
+    if (!signUpBody.password) {
+      throw new ForbiddenException('Password is not provided');
+    }
+
     const passwordHash = await this.hashData(signUpBody.password);
 
     const newUser = await this.userService.create({
@@ -62,10 +66,21 @@ export class AuthenticationService {
       email: signInBody.email,
     });
 
-    const verify = await bcrypt.compare(signInBody.password, user.passwordHash);
+    if (!user) {
+      throw new ForbiddenException('User does not exist');
+    }
 
-    if (!verify) {
-      throw new ForbiddenException('Access denied');
+    if (!signInBody.password) {
+      throw new ForbiddenException('Check your password or email');
+    }
+
+    const validatePassword = await bcrypt.compare(
+      signInBody.password,
+      user.passwordHash,
+    );
+
+    if (!validatePassword) {
+      throw new ForbiddenException('Check your password or email');
     }
 
     const token = await this.generateToken(user.id, user.email);
